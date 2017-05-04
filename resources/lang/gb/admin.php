@@ -11,6 +11,7 @@ return [
         'log_system'               => 'Logs System',
         'images'                   => 'Images',
         'articles'                 => 'Articles',
+        'crawlers'                 => 'Crawlers',
     ],
     'breadcrumb' => [
         'dashboard'                => 'Dashboard',
@@ -23,6 +24,7 @@ return [
         'images'                   => 'Images',
         'articles'                 => 'Articles',
         'create_new'               => 'Create New',
+        'crawlers'                 => 'Crawlers',
     ],
     'messages' => [
         'general' => [

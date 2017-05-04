@@ -30,6 +30,10 @@
 
             \Route::resource('logs', 'Admin\LogController');
 
+            \Route::group(['prefix' => 'crawlers'], function () {
+                \Route::get('/', 'Admin\CrawlerController@index');
+            });
+
         });
 
         \Route::group(['middleware' => ['admin.has_role.admin']], function () {
