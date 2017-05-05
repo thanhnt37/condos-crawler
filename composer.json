@@ -19,7 +19,11 @@
     "laravel/socialite": "^2.0",
     "google/apiclient": "^2.0",
     "dusterio/laravel-aws-worker": "^0.1.5",
-    "cviebrock/eloquent-sluggable": "^4.0"
+    "cviebrock/eloquent-sluggable": "^4.0",
+    "sunra/php-simple-html-dom-parser": "1.5.2",
+    "laravel-parse/parse": "^3.0",
+    "yangqi/htmldom": "1.0.*",
+    "maatwebsite/excel": "~2.1.0"
   },
   "require-dev": {
     "mockery/mockery": "0.9.*",

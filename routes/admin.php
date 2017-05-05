@@ -32,6 +32,7 @@
 
             \Route::group(['prefix' => 'crawlers'], function () {
                 \Route::get('/', 'Admin\CrawlerController@index');
+                \Route::post('/', 'Admin\CrawlerController@crawl');
             });
 
         });

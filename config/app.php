@@ -178,6 +178,7 @@ return [
         Laravel\Socialite\SocialiteServiceProvider::class,
         Dusterio\AwsWorker\Integrations\LaravelServiceProvider::class,
         Cviebrock\EloquentSluggable\ServiceProvider::class,
+        Maatwebsite\Excel\ExcelServiceProvider::class,
 
         /*
          * Application Service Providers...
@@ -252,6 +253,8 @@ return [
         'TypeHelper'             => App\Facades\TypeHelper::class,
         'RedirectHelper'         => App\Facades\RedirectHelper::class,
         'CacheHelper'            => App\Facades\CacheHelper::class,
+
+        'Excel' => Maatwebsite\Excel\Facades\Excel::class,
         /* NEW FACADE */
     ],
 
