@@ -18,6 +18,10 @@ class SingleKeyModelRepository extends BaseRepository implements SingleKeyModelR
     public function find($id)
     {
         $modelClass = $this->getModelClassName();
+
+        $object = $modelClass::find($id);
+        return $object;
+
         $cacheKey   = $modelClass::getTableName();
         $cached = \Redis::hget(\CacheHelper::generateCacheKey('hash_' . $cacheKey), $id);
         if( $cached ) {

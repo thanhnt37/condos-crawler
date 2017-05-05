@@ -52,8 +52,8 @@ class Condominiumsmanila extends Base
 
     public static function boot()
     {
-        parent::boot();
-        parent::observe(new \App\Observers\CondominiumsmanilaObserver);
+//        parent::boot();
+//        parent::observe(new \App\Observers\CondominiumsmanilaObserver);
     }
 
     // Relations
