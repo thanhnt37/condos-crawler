@@ -91,6 +91,11 @@ class RepositoryBindServiceProvider extends ServiceProvider {
             \App\Repositories\Eloquent\CondominiumsmanilaRepository::class
         );
 
+        $this->app->singleton(
+            \App\Repositories\PhrealestateRepositoryInterface::class,
+            \App\Repositories\Eloquent\PhrealestateRepository::class
+        );
+
         /* NEW BINDING */
     }
 }
