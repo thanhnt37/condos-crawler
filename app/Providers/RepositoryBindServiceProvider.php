@@ -86,6 +86,11 @@ class RepositoryBindServiceProvider extends ServiceProvider {
             \App\Repositories\Eloquent\LogRepository::class
         );
 
+        $this->app->singleton(
+            \App\Repositories\CondominiumsmanilaRepositoryInterface::class,
+            \App\Repositories\Eloquent\CondominiumsmanilaRepository::class
+        );
+
         /* NEW BINDING */
     }
 }
