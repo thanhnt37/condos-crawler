@@ -32,7 +32,7 @@ class CreatecondominiumsmanilasTable extends Migration
             $table->integer('number_unit')->nullable();
 
             $table->string('developer_name')->nullable();
-            $table->string('facilities')->nullable();
+            $table->text('facilities')->nullable();
             $table->string('unit_size')->nullable();
 
             $table->string('condo_url')->nullable();
