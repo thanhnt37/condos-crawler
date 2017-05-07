@@ -8,17 +8,23 @@ use App\Http\Requests\BaseRequest;
 use Maatwebsite\Excel\Excel;
 use Yangqi\Htmldom\Htmldom;
 use App\Repositories\CondominiumsmanilaRepositoryInterface;
+use App\Repositories\PhrealestateRepositoryInterface;
 
 class CrawlerController extends Controller
 {
     /** @var \App\Repositories\CondominiumsmanilaRepositoryInterface */
     protected $condominiumsmanilaRepository;
 
+    /** @var \App\Repositories\PhrealestateRepositoryInterface */
+    protected $phrealestateRepository;
+
     public function __construct(
-        CondominiumsmanilaRepositoryInterface      $condominiumsmanilaRepository
+        CondominiumsmanilaRepositoryInterface   $condominiumsmanilaRepository,
+        PhrealestateRepositoryInterface         $phrealestateRepository
     )
     {
-        $this->condominiumsmanilaRepository        = $condominiumsmanilaRepository;
+        $this->condominiumsmanilaRepository     = $condominiumsmanilaRepository;
+        $this->phrealestateRepository           = $phrealestateRepository;
     }
 
     public function index()
@@ -85,7 +91,50 @@ class CrawlerController extends Controller
 //        })->export('csv');
     }
 
-    public function getListCondominiumsmanila($url)
+    public function phrealestate(BaseRequest $request)
+    {
+        $url = $request->get('url', '');
+
+        $urls = $this->getListPhrealestate($url);
+
+        foreach ($urls as $key => $url) {
+            $condo = $this->getDetailPhrealestate($url);
+
+            $this->phrealestateRepository->create(
+                [
+                    'title'           => isset($condo['title']) ? $condo['title'] : 'null',
+                    'postal_code'     => null,
+                    'country'         => 'philippine',
+                    'province'        => null,
+                    'city'            => null,
+                    'address'         => (isset($condo['address']) ? $condo['address'] : null) . isset($condo['location']) ? (' - ' . $condo['location']) : null,
+                    'building_type'   => isset($condo['project_type']) ? $condo['project_type'] : null,
+                    'latitude'        => 0,
+                    'longitude'       => 0,
+                    'completion_year' => null,
+                    'number_floor'    => null,
+                    'number_unit'     => null,
+                    'developer_name'  => null,
+                    'facilities'      => null,
+                    'unit_size'       => isset($condo['units']) ? $condo['units'] : null,
+                    'condo_url'       => isset($condo['condos_url']) ? $condo['condos_url'] : null,
+                    'developer_url'   => null,
+                    'image_url'       => isset($condo['image_url']) ? intval($condo['image_url']) : null,
+                    'descriptions'    => isset($condo['descriptions']) ? intval($condo['descriptions']) : null,
+                ]
+            );
+        }
+
+        return redirect()
+            ->action('Admin\CrawlerController@index')
+            ->with(
+                'message-success',
+                trans('admin.messages.general.create_success')
+            );
+    }
+
+    // ------------ Condominiumsmanila ------------
+    private function getListCondominiumsmanila($url)
     {
         $dom = new Htmldom($url);
         $elems = $dom->find('a.contentfont');
@@ -97,7 +146,7 @@ class CrawlerController extends Controller
         return array_unique($urls);
     }
 
-    public function getDetailCondominiumsmanila($url)
+    private function getDetailCondominiumsmanila($url)
     {
         $dom = new Htmldom($url);
         $elems = $dom->find('td.contentfont[style=padding-top:10px]');
@@ -115,4 +164,45 @@ class CrawlerController extends Controller
 
         return $condos;
     }
+    // ------------ Condominiumsmanila ------------
+
+    // ------------ Phrealestate ------------
+    private function getListPhrealestate($url)
+    {
+        $dom = new Htmldom($url);
+        $elems = $dom->find('div.quick-overview a[itemprop=url]');
+
+        $urls = [];
+        foreach ( $elems as $elem ) {
+            $urls[] = $elem->href;
+        }
+
+        return array_unique($urls);
+    }
+
+    private function getDetailPhrealestate($url)
+    {
+        $dom = new Htmldom($url);
+        $elems = $dom->find('div.media-body');
+        $elems = str_replace("\t", '', $elems[0]->plaintext);
+
+        $title = $dom->find('h1.section-title');
+        $condos['title'] = substr($title[0]->plaintext, 3,  strlen($title[0]->plaintext) - 9);
+
+        $descriptions = $dom->find('p[style=text-align: justify;]');
+        $condos['descriptions'] = substr($descriptions[0]->plaintext, 3,  strlen($descriptions[0]->plaintext) - 9);
+
+        $condos['image_url'] = $dom->find('img[itemprop=image]')[0]->src;
+        foreach ( explode("\r\n", $elems) as $key => $condo ) {
+            $property = explode(':', $condo);
+            if( count($property) ==2 ) {
+                $condos[\StringHelper::camel2Snake($property[0])] = substr(preg_replace('!\s+!', ' ',$property[1]), 1, strlen(preg_replace('!\s+!', ' ',$property[1])) - 2);
+            } else {
+                $condos['condos_url'] = substr(preg_replace('!\s+!', ' ',$property[0]), 1, strlen(preg_replace('!\s+!', ' ',$property[0])) - 7);
+            }
+        }
+
+        return $condos;
+    }
+    // ------------ Phrealestate ------------
 }
