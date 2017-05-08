@@ -38,6 +38,7 @@ class Phrealestate extends Base
         'condo_url',
         'developer_url',
         'image_url',
+        'descriptions'
     ];
 
     /**

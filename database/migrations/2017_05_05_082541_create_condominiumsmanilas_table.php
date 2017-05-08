@@ -39,6 +39,7 @@ class CreatecondominiumsmanilasTable extends Migration
             $table->string('developer_url')->nullable();
 
             $table->string('image_url')->nullable();
+            $table->string('descriptions')->nullable();
 
             $table->timestamps();
         });

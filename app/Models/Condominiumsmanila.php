@@ -37,6 +37,8 @@ class Condominiumsmanila extends Base
         'unit_size',
         'condo_url',
         'developer_url',
+        'image_url',
+        'descriptions'
     ];
 
     /**
