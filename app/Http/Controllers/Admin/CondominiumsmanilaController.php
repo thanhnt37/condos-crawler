@@ -66,9 +66,8 @@ class CondominiumsmanilaController extends Controller
      */
     public function store(CondominiumsmanilaRequest $request)
     {
-        $input = $request->only(['title','postal_code','country','province','city','address','building_type','latitude','longitude','completion_year','number_floor','number_unit','developer_name','facilities','unit_size','condo_url','developer_url']);
+        $input = $request->only(['title', 'postal_code', 'country', 'province', 'city', 'address', 'building_type', 'latitude', 'longitude', 'completion_year', 'number_floor', 'number_unit', 'developer_name', 'facilities', 'unit_size', 'condo_url', 'developer_url', 'image_url', 'descriptions']);
         
-        $input['is_enabled'] = $request->get('is_enabled', 0);
         $condominiumsmanila = $this->condominiumsmanilaRepository->create($input);
 
         if (empty( $condominiumsmanila )) {
@@ -123,9 +122,8 @@ class CondominiumsmanilaController extends Controller
         if (empty( $condominiumsmanila )) {
             abort(404);
         }
-        $input = $request->only(['title','postal_code','country','province','city','address','building_type','latitude','longitude','completion_year','number_floor','number_unit','developer_name','facilities','unit_size','condo_url','developer_url']);
-        
-        $input['is_enabled'] = $request->get('is_enabled', 0);
+        $input = $request->only(['title','postal_code','country','province','city','address','building_type','latitude','longitude','completion_year','number_floor','number_unit','developer_name','facilities','unit_size','condo_url','developer_url', 'image_url', 'descriptions']);
+
         $this->condominiumsmanilaRepository->update($condominiumsmanila, $input);
 
         return redirect()->action('Admin\CondominiumsmanilaController@show', [$id])

@@ -1,7 +1,7 @@
 <?php
 
 return [
-    'menu'     => [
+    'menu'       => [
         'dashboard'                => 'Dashboard',
         'admin_users'              => 'Admin Users',
         'users'                    => 'Users',
@@ -26,14 +26,14 @@ return [
         'create_new'               => 'Create New',
         'crawlers'                 => 'Crawlers',
     ],
-    'messages' => [
+    'messages'   => [
         'general' => [
             'update_success' => 'Successfully updated.',
             'create_success' => 'Successfully created.',
             'delete_success' => 'Successfully deleted.',
         ],
     ],
-    'errors'   => [
+    'errors'     => [
         'general'  => [
             'save_failed' => 'Failed To Save. Please contact with developers',
         ],
@@ -49,7 +49,7 @@ return [
             ],
         ],
     ],
-    'pages'    => [
+    'pages'      => [
         'common'                   => [
             'label'   => [
                 'page'             => 'Page',
@@ -212,32 +212,32 @@ return [
                 'query'     => 'Query',
             ],
         ],
-        'condominiumsmanilas'   => [
-            'columns'  => [
-                'title' => 'Title',
-                'postal_code' => 'Postal_code',
-                'country' => 'Country',
-                'province' => 'Province',
-                'city' => 'City',
-                'address' => 'Address',
-                'building_type' => 'Building_type',
-                'latitude' => 'Latitude',
-                'longitude' => 'Longitude',
-                'completion_year' => 'Completion_year',
-                'number_floor' => 'Number_floor',
-                'number_unit' => 'Number_unit',
-                'developer_name' => 'Developer_name',
-                'facilities' => 'Facilities',
-                'unit_size' => 'Unit_size',
-                'condo_url' => 'Condo_url',
-                'developer_url' => 'Developer_url',
-                'image_url' => 'Image_url',
-                'descriptions' => 'Descriptions',
+        'condominiumsmanilas'      => [
+            'columns' => [
+                'title'           => 'Title',
+                'postal_code'     => 'Postal Code',
+                'country'         => 'Country',
+                'province'        => 'Province',
+                'city'            => 'City',
+                'address'         => 'Address',
+                'building_type'   => 'Building Type',
+                'latitude'        => 'Latitude',
+                'longitude'       => 'Longitude',
+                'completion_year' => 'Completion Year',
+                'number_floor'    => 'Number Floor',
+                'number_unit'     => 'Number Unit',
+                'developer_name'  => 'Developer Name',
+                'facilities'      => 'Facilities',
+                'unit_size'       => 'Unit Size',
+                'condo_url'       => 'Condo URL',
+                'developer_url'   => 'Developer URL',
+                'image_url'       => 'Image URL',
+                'descriptions'    => 'Descriptions',
             ],
         ],
         /* NEW PAGE STRINGS */
     ],
-    'roles'    => [
+    'roles'      => [
         'super_user' => 'Super User',
         'admin'      => 'Administrator',
     ],

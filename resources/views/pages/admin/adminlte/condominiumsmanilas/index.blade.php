@@ -53,49 +53,35 @@ Condominiumsmanilas
                 <th>{!! \PaginationHelper::sort('city', trans('admin.pages.condominiumsmanilas.columns.city')) !!}</th>
                 <th>{!! \PaginationHelper::sort('address', trans('admin.pages.condominiumsmanilas.columns.address')) !!}</th>
                 <th>{!! \PaginationHelper::sort('building_type', trans('admin.pages.condominiumsmanilas.columns.building_type')) !!}</th>
-                <th>{!! \PaginationHelper::sort('latitude', trans('admin.pages.condominiumsmanilas.columns.latitude')) !!}</th>
-                <th>{!! \PaginationHelper::sort('longitude', trans('admin.pages.condominiumsmanilas.columns.longitude')) !!}</th>
                 <th>{!! \PaginationHelper::sort('completion_year', trans('admin.pages.condominiumsmanilas.columns.completion_year')) !!}</th>
                 <th>{!! \PaginationHelper::sort('number_floor', trans('admin.pages.condominiumsmanilas.columns.number_floor')) !!}</th>
                 <th>{!! \PaginationHelper::sort('number_unit', trans('admin.pages.condominiumsmanilas.columns.number_unit')) !!}</th>
                 <th>{!! \PaginationHelper::sort('developer_name', trans('admin.pages.condominiumsmanilas.columns.developer_name')) !!}</th>
                 <th>{!! \PaginationHelper::sort('unit_size', trans('admin.pages.condominiumsmanilas.columns.unit_size')) !!}</th>
-                <th>{!! \PaginationHelper::sort('condo_url', trans('admin.pages.condominiumsmanilas.columns.condo_url')) !!}</th>
-                <th>{!! \PaginationHelper::sort('developer_url', trans('admin.pages.condominiumsmanilas.columns.developer_url')) !!}</th>
 
-                <th style="width: 40px">{!! \PaginationHelper::sort('is_enabled', trans('admin.pages.common.label.is_enabled')) !!}</th>
                 <th style="width: 40px">@lang('admin.pages.common.label.actions')</th>
             </tr>
             @foreach( $condominiumsmanilas as $condominiumsmanila )
                 <tr>
                     <td>{{ $condominiumsmanila->id }}</td>
-               <td>{{ $condominiumsmanila->title }}</td>
-               <td>{{ $condominiumsmanila->postal_code }}</td>
-               <td>{{ $condominiumsmanila->country }}</td>
-               <td>{{ $condominiumsmanila->province }}</td>
-               <td>{{ $condominiumsmanila->city }}</td>
-               <td>{{ $condominiumsmanila->address }}</td>
-               <td>{{ $condominiumsmanila->building_type }}</td>
-               <td>{{ $condominiumsmanila->latitude }}</td>
-               <td>{{ $condominiumsmanila->longitude }}</td>
-               <td>{{ $condominiumsmanila->completion_year }}</td>
-               <td>{{ $condominiumsmanila->number_floor }}</td>
-               <td>{{ $condominiumsmanila->number_unit }}</td>
-               <td>{{ $condominiumsmanila->developer_name }}</td>
-               <td>{{ $condominiumsmanila->unit_size }}</td>
-               <td>{{ $condominiumsmanila->condo_url }}</td>
-               <td>{{ $condominiumsmanila->developer_url }}</td>
+                    <td>{{ $condominiumsmanila->title }}</td>
+                    <td>{{ $condominiumsmanila->postal_code }}</td>
+                    <td>{{ $condominiumsmanila->country }}</td>
+                    <td>{{ $condominiumsmanila->province }}</td>
+                    <td>{{ $condominiumsmanila->city }}</td>
+                    <td>{{ $condominiumsmanila->address }}</td>
+                    <td>{{ $condominiumsmanila->building_type }}</td>
+                    <td>{{ $condominiumsmanila->completion_year }}</td>
+                    <td>{{ $condominiumsmanila->number_floor }}</td>
+                    <td>{{ $condominiumsmanila->number_unit }}</td>
+                    <td>{{ $condominiumsmanila->developer_name }}</td>
+                    <td>{{ $condominiumsmanila->unit_size }}</td>
 
                     <td>
-                        @if( $condominiumsmanila->is_enabled )
-                            <span class="badge bg-green">@lang('admin.pages.common.label.is_enabled_true')</span>
-                        @else
-                            <span class="badge bg-red">@lang('admin.pages.common.label.is_enabled_false')</span>
-                        @endif
-                    </td>
-                    <td>
-                        <a href="{!! action('Admin\CondominiumsmanilaController@show', $condominiumsmanila->id) !!}" class="btn btn-block btn-primary btn-xs">@lang('admin.pages.common.buttons.edit')</a>
-                        <a href="#" class="btn btn-block btn-danger btn-xs delete-button" data-delete-url="{!! action('Admin\CondominiumsmanilaController@destroy', $condominiumsmanila->id) !!}">@lang('admin.pages.common.buttons.delete')</a>
+                        <a href="{!! action('Admin\CondominiumsmanilaController@show', $condominiumsmanila->id) !!}"
+                           class="btn btn-block btn-primary btn-xs">@lang('admin.pages.common.buttons.edit')</a>
+                        <a href="#" class="btn btn-block btn-danger btn-xs delete-button"
+                           data-delete-url="{!! action('Admin\CondominiumsmanilaController@destroy', $condominiumsmanila->id) !!}">@lang('admin.pages.common.buttons.delete')</a>
                     </td>
                 </tr>
             @endforeach
