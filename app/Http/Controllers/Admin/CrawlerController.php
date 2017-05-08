@@ -99,6 +99,9 @@ class CrawlerController extends Controller
 
         foreach ($urls as $key => $url) {
             $condo = $this->getDetailPhrealestate($url);
+            if( !$condo ) {
+                continue;
+            }
 
             $this->phrealestateRepository->create(
                 [
@@ -182,7 +185,12 @@ class CrawlerController extends Controller
 
     private function getDetailPhrealestate($url)
     {
-        $dom = new Htmldom($url);
+        try {
+            $dom = new Htmldom($url);
+        } catch (\Exception $e) {
+            return null;
+        }
+
         $elems = $dom->find('div.media-body');
         $elems = str_replace("\t", '', $elems[0]->plaintext);
 
