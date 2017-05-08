@@ -122,8 +122,53 @@ class CrawlerController extends Controller
                     'unit_size'       => isset($condo['units']) ? $condo['units'] : null,
                     'condo_url'       => isset($condo['condos_url']) ? $condo['condos_url'] : null,
                     'developer_url'   => null,
-                    'image_url'       => isset($condo['image_url']) ? intval($condo['image_url']) : null,
-                    'descriptions'    => isset($condo['descriptions']) ? intval($condo['descriptions']) : null,
+                    'image_url'       => isset($condo['image_url']) ? $condo['image_url'] : null,
+                    'descriptions'    => isset($condo['descriptions']) ? $condo['descriptions'] : null,
+                ]
+            );
+        }
+
+        return redirect()
+            ->action('Admin\CrawlerController@index')
+            ->with(
+                'message-success',
+                trans('admin.messages.general.create_success')
+            );
+    }
+
+    public function philpropertyexpert(BaseRequest $request)
+    {
+        $url = $request->get('url', '');
+
+        $urls = $this->getListPhilpropertyexpert($url);
+
+        foreach ( $urls as $url ) {
+            $condo = $this->getDetailPhilpropertyexpert($url);
+            if( !$condo ) {
+                continue;
+            }
+
+            $this->phrealestateRepository->create(
+                [
+                    'title'           => isset($condo['title']) ? $condo['title'] : 'null',
+                    'postal_code'     => null,
+                    'country'         => 'philippine',
+                    'province'        => null,
+                    'city'            => null,
+                    'address'         => isset($condo['location']) ? $condo['location'] : null,
+                    'building_type'   => isset($condo['property_type']) ? $condo['property_type'] : null,
+                    'latitude'        => 0,
+                    'longitude'       => 0,
+                    'completion_year' => isset($condo['turnover_built']) ? $condo['turnover_built'] : null,
+                    'number_floor'    => null,
+                    'number_unit'     => null,
+                    'developer_name'  => isset($condo['developer']) ? $condo['developer'] : null,
+                    'facilities'      => isset($condo['parking']) ? 'parking: ' . $condo['parking'] : null,
+                    'unit_size'       => (isset($condo['bedroom']) ? 'bedroom: ' . $condo['bedroom'] : null) . (isset($condo['bathroom']) ? ' | bathroom: ' . $condo['bathroom'] : null),
+                    'condo_url'       => null,
+                    'developer_url'   => null,
+                    'image_url'       => isset($condo['image_url']) ? $condo['image_url'] : null,
+                    'descriptions'    => null,
                 ]
             );
         }
@@ -213,4 +258,47 @@ class CrawlerController extends Controller
         return $condos;
     }
     // ------------ Phrealestate ------------
+
+    // ------------ philpropertyexpert ------------
+    private function getListPhilpropertyexpert($url)
+    {
+        try {
+            $dom = new Htmldom($url);
+        } catch (\Exception $e) {
+            return null;
+        }
+
+        $elems = $dom->find('a.overlay');
+
+        $urls = [];
+        foreach ( $elems as $elem ) {
+            $urls[] = $elem->href;
+        }
+
+        return array_unique($urls);
+
+    }
+
+    public function getDetailPhilpropertyexpert($url)
+    {
+        try {
+            $dom = new Htmldom($url);
+        } catch (\Exception $e) {
+            return null;
+        }
+
+        $title = $dom->find('h2.prop-title');
+        $condos['title'] = $title[0]->plaintext;
+
+        $condos['image_url'] = isset($dom->find('img.media-object')[0]) ? $dom->find('img.media-object')[0]->src : null;
+
+        $elems = $dom->find('li.info-label');
+        foreach ( $elems as $elem ) {
+            $property = explode(':', $elem->plaintext);
+            $condos[\StringHelper::camel2Snake($property[0])] = substr(preg_replace('/\s+/', ' ', $property[1]), 1, strlen(preg_replace('/\s+/', ' ', $property[1])) - 2);
+        }
+
+        return $condos;
+    }
+    // ------------ philpropertyexpert ------------
 }
