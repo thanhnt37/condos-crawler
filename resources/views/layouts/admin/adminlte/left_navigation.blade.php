@@ -43,6 +43,7 @@
                 <li @if( $menu=='crawlers') class="active" @endif ><a href="{!! \URL::action('Admin\CrawlerController@index') !!}"><i class="fa fa-file-word-o"></i> <span>@lang('admin.menu.crawlers')</span></a></li>
             @endif
             <li @if( $menu=='condominiumsmanilas') class="active" @endif ><a href="{!! \URL::action('Admin\CondominiumsmanilaController@index') !!}"><i class="fa fa-users"></i> <span>Condominiumsmanilas</span></a></li>
+            <li @if( $menu=='phrealestates') class="active" @endif ><a href="{!! \URL::action('Admin\PhrealestateController@index') !!}"><i class="fa fa-users"></i> <span>Phrealestates</span></a></li>
             <!-- %%SIDEMENU%% -->
         </ul>
     </section>

@@ -190,7 +190,7 @@ class CrawlerController extends Controller
         $condos['title'] = substr($title[0]->plaintext, 3,  strlen($title[0]->plaintext) - 9);
 
         $descriptions = $dom->find('p[style=text-align: justify;]');
-        $condos['descriptions'] = substr($descriptions[0]->plaintext, 3,  strlen($descriptions[0]->plaintext) - 9);
+        $condos['descriptions'] = isset($descriptions[0]->plaintext) ? substr($descriptions[0]->plaintext, 3,  strlen($descriptions[0]->plaintext) - 9) : null;
 
         $condos['image_url'] = $dom->find('img[itemprop=image]')[0]->src;
         foreach ( explode("\r\n", $elems) as $key => $condo ) {
