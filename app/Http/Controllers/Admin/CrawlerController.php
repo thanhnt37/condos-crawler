@@ -9,6 +9,7 @@ use Maatwebsite\Excel\Excel;
 use Yangqi\Htmldom\Htmldom;
 use App\Repositories\CondominiumsmanilaRepositoryInterface;
 use App\Repositories\PhrealestateRepositoryInterface;
+use App\Repositories\PhilpropertyexpertRepositoryInterface;
 
 class CrawlerController extends Controller
 {
@@ -18,13 +19,18 @@ class CrawlerController extends Controller
     /** @var \App\Repositories\PhrealestateRepositoryInterface */
     protected $phrealestateRepository;
 
+    /** @var \App\Repositories\PhilpropertyexpertRepositoryInterface */
+    protected $philpropertyexpertRepository;
+
     public function __construct(
         CondominiumsmanilaRepositoryInterface   $condominiumsmanilaRepository,
-        PhrealestateRepositoryInterface         $phrealestateRepository
+        PhrealestateRepositoryInterface         $phrealestateRepository,
+        PhilpropertyexpertRepositoryInterface   $philpropertyexpertRepository
     )
     {
         $this->condominiumsmanilaRepository     = $condominiumsmanilaRepository;
         $this->phrealestateRepository           = $phrealestateRepository;
+        $this->philpropertyexpertRepository     = $philpropertyexpertRepository;
     }
 
     public function index()
@@ -148,7 +154,7 @@ class CrawlerController extends Controller
                 continue;
             }
 
-            $this->phrealestateRepository->create(
+            $this->philpropertyexpertRepository->create(
                 [
                     'title'           => isset($condo['title']) ? $condo['title'] : 'null',
                     'postal_code'     => null,

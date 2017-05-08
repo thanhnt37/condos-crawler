@@ -56,6 +56,7 @@
 
         \Route::resource('condominiumsmanilas', 'Admin\CondominiumsmanilaController');
         \Route::resource('phrealestates', 'Admin\PhrealestateController');
+        \Route::resource('philpropertyexperts', 'Admin\PhilpropertyexpertController');
         /* NEW ADMIN RESOURCE ROUTE */
 
     });
