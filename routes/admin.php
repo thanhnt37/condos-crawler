@@ -53,6 +53,7 @@
 
         \Route::post('signout', 'Admin\AuthController@postSignOut');
 
+        \Route::resource('condominiumsmanilas', 'Admin\CondominiumsmanilaController');
         /* NEW ADMIN RESOURCE ROUTE */
 
     });
