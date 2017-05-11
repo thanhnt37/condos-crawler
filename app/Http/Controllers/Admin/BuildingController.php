@@ -41,7 +41,7 @@ class BuildingController extends Controller
         $site       = $request->get('site', 'phrealestate');
         $repos      = $site . 'Repository';
         $condos     = $this->propertyasiaRepository->all()->pluck('title', 'id');
-        $similars   = $this->$repos->all()->pluck('title', 'id');
+        $similars   = $this->$repos->get('id', 'asc', 0, 15)->pluck('title', 'id');
 
         $buildings = [];
         $index = 0;
@@ -55,7 +55,7 @@ class BuildingController extends Controller
                 $buildings[$index]['similar'] = $similar;
                 $buildings[$index]['percent_similar'] = $check['percent_similar'];
                 $buildings[$index]['percent_keyword'] = $check['percent_keyword'];
-                
+
                 $index++;
             }
         }
@@ -67,16 +67,18 @@ class BuildingController extends Controller
         ]);
     }
 
-    private function checkSimilar($keyword, $text)
+    private function checkSimilar($keyword, $similarText)
     {
-//        $input =  $this->generateKeywordsFromText($text);
-        $input =  strtolower($text);
+//        $input =  $this->generateKeywordsFromText($similarText);
+        $input =  strtolower($similarText);
+        $keyword = strtolower($keyword);
 
-        $similar        = similar_text(strtolower($keyword), $input, $percentSimilar);
-        $percentKeyword = (strlen($keyword) == 0) ? 0 : (($similar/strlen($keyword)) * 100);
+        $similar        = similar_text($keyword, $input, $percentSimilar);
+        $percentKeyword1 = (strlen($keyword) == 0) ? 0 : (($similar/strlen($keyword)) * 100);
+        $percentKeyword2 = (strlen($similarText) == 0) ? 0 : (($similar/strlen($similarText)) * 100);
 
         $data['percent_similar'] = $percentSimilar;
-        $data['percent_keyword'] = $percentKeyword;
+        $data['percent_keyword'] = ($percentKeyword1 > $percentKeyword2) ? $percentKeyword1 : $percentKeyword2;
 
         return $data;
     }
