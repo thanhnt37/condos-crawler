@@ -63,7 +63,7 @@ class BuildingController extends Controller
         return view('pages.admin.' . config('view.admin') . '.buildings.index', [
             'buildings' => $buildings,
             'site'      => $site,
-            'count'     => count($similars)
+            'count'     => $this->$repos->count()
         ]);
     }
 
