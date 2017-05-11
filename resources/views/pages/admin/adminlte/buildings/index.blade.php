@@ -110,7 +110,7 @@
                         </select>
                     </h3>
                     <br>
-                    <p style="display: inline-block;">@lang('admin.pages.common.label.search_results', ['count' => count($buildings)])</p>
+                    <p style="display: inline-block;">@lang('admin.pages.common.label.search_results', ['count' => $count])</p>
                 </form>
             </div>
             <div class="col-sm-6 wrap-top-pagination">

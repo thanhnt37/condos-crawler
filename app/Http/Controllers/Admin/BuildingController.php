@@ -48,22 +48,22 @@ class BuildingController extends Controller
         foreach ( $similars as $key2 => $similar ) {
             foreach ( $condos as $key => $condo ) {
                 $check = $this->checkSimilar($condo, $similar);
+
                 $buildings[$index]['condo_id'] = $key;
                 $buildings[$index]['similar_id'] = $key2;
                 $buildings[$index]['condo'] = $condo;
                 $buildings[$index]['similar'] = $similar;
                 $buildings[$index]['percent_similar'] = $check['percent_similar'];
                 $buildings[$index]['percent_keyword'] = $check['percent_keyword'];
+                
                 $index++;
-                if( ($check['percent_similar'] <= 10 && $check['percent_keyword'] <= 10) || ($check['percent_similar'] >= 75 && $check['percent_keyword'] >= 75) ) {
-
-                }
             }
         }
 
         return view('pages.admin.' . config('view.admin') . '.buildings.index', [
             'buildings' => $buildings,
-            'site'      => $site
+            'site'      => $site,
+            'count'     => count($similars)
         ]);
     }
 
