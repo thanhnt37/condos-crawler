@@ -27,9 +27,9 @@ class CreatephrealestatesTable extends Migration
             $table->double('latitude', 9, 6)->default(0);
             $table->double('longitude', 9, 6)->default(0);
 
-            $table->integer('completion_year')->nullable();
-            $table->integer('number_floor')->nullable();
-            $table->integer('number_unit')->nullable();
+            $table->string('completion_year')->nullable();
+            $table->string('number_floor')->nullable();
+            $table->string('number_unit')->nullable();
 
             $table->string('developer_name')->nullable();
             $table->text('facilities')->nullable();
