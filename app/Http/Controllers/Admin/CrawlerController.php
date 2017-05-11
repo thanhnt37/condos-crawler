@@ -10,6 +10,7 @@ use Yangqi\Htmldom\Htmldom;
 use App\Repositories\CondominiumsmanilaRepositoryInterface;
 use App\Repositories\PhrealestateRepositoryInterface;
 use App\Repositories\PhilpropertyexpertRepositoryInterface;
+use App\Repositories\PropertyasiaRepositoryInterface;
 
 class CrawlerController extends Controller
 {
@@ -22,15 +23,20 @@ class CrawlerController extends Controller
     /** @var \App\Repositories\PhilpropertyexpertRepositoryInterface */
     protected $philpropertyexpertRepository;
 
+    /** @var \App\Repositories\PropertyasiaRepositoryInterface */
+    protected $propertyasiaRepository;
+
     public function __construct(
         CondominiumsmanilaRepositoryInterface   $condominiumsmanilaRepository,
         PhrealestateRepositoryInterface         $phrealestateRepository,
-        PhilpropertyexpertRepositoryInterface   $philpropertyexpertRepository
+        PhilpropertyexpertRepositoryInterface   $philpropertyexpertRepository,
+        PropertyasiaRepositoryInterface         $propertyasiaRepository
     )
     {
         $this->condominiumsmanilaRepository     = $condominiumsmanilaRepository;
         $this->phrealestateRepository           = $phrealestateRepository;
         $this->philpropertyexpertRepository     = $philpropertyexpertRepository;
+        $this->propertyasiaRepository           = $propertyasiaRepository;
     }
 
     public function index()
@@ -187,6 +193,77 @@ class CrawlerController extends Controller
             );
     }
 
+    function get_string_between($string, $start, $end){
+        $string = ' ' . $string;
+        $ini = strpos($string, $start);
+        if ($ini == 0) return '';
+        $ini += strlen($start);
+        $len = strpos($string, $end, $ini) - $ini;
+        return substr($string, $ini, $len);
+    }
+    function get_url($url)
+    {
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_HEADER, 0);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 30);
+        curl_setopt($ch, CURLOPT_URL, $url);
+        $data = curl_exec($ch);
+//        $info = curl_getinfo($ch);
+//        $logfile = fopen("crawler.log","a");
+//        echo fwrite($logfile,'Page ' . $info['url'] . ' fetched in ' . $info['total_time'] . ' seconds. Http status code: ' . $info['http_code'] . "\n");
+//        fclose($logfile);
+        curl_close($ch);
+
+        return $data;
+    }
+
+    public function propertyasia(BaseRequest $request)
+    {
+        $url = $request->get('url', '');
+
+        dd($this->getDetailPropertyasia($url));
+
+        $urls = $this->getListPropertyasia($url);
+        foreach ( $urls as $url ) {
+            $condo = $this->getDetailPropertyasia($url);
+            if( !$condo ) {
+                continue;
+            }
+
+            $this->propertyasiaRepository->create(
+                [
+                    'title'           => isset($condo['title']) ? $condo['title'] : 'null',
+                    'postal_code'     => null,
+                    'country'         => 'philippine',
+                    'province'        => null,
+                    'city'            => null,
+                    'address'         => isset($condo['address']) ? $condo['address'] : null,
+                    'building_type'   => isset($condo['type']) ? $condo['type'] : null,
+                    'latitude'        => isset($condo['latitude']) ? $condo['latitude'] : 0,
+                    'longitude'       => isset($condo['longitude']) ? $condo['longitude'] : 0,
+                    'completion_year' => isset($condo['available']) ? $condo['available'] : null,
+                    'number_floor'    => isset($condo['total_floor']) ? $condo['total_floor'] : null,
+                    'number_unit'     => isset($condo['total_units']) ? $condo['total_units'] : null,
+                    'facilities'      => isset($condo['facilities']) ? $condo['facilities'] : null,
+                    'unit_size'       => isset($condo['unit_types']) ? $condo['unit_types'] : null,
+                    'condo_url'       => null,
+                    'developer_name'  => null,
+                    'developer_url'   => null,
+                    'image_url'       => isset($condo['image_url']) ? $condo['image_url'] : null,
+                    'descriptions'    => null,
+                ]
+            );
+        }
+
+        return redirect()
+            ->action('Admin\CrawlerController@index')
+            ->with(
+                'message-success',
+                trans('admin.messages.general.create_success')
+            );
+
+    }
     // ------------ Condominiumsmanila ------------
     private function getListCondominiumsmanila($url)
     {
@@ -307,4 +384,81 @@ class CrawlerController extends Controller
         return $condos;
     }
     // ------------ philpropertyexpert ------------
+
+    // ------------ PropertyAsia.ph ------------
+    public function getListPropertyasia($url)
+    {
+        try {
+            $dom = new Htmldom($url);
+        } catch (\Exception $e) {
+            return null;
+        }
+
+        $elems = $dom->find('div.property-list')[0]->find('a[itemprop=url]');
+
+        $urls = [];
+        foreach ( $elems as $elem ) {
+            $urls[] = $elem->href;
+        }
+
+        return array_unique($urls);
+    }
+
+    public function getDetailPropertyasia($url)
+    {
+        try {
+            $dom = new Htmldom($url);
+        } catch (\Exception $e) {
+            return null;
+        }
+
+        $title = preg_replace('/\s+/', ' ', $dom->find('h1.title')[0]->plaintext);
+        $data['title'] = substr($title, 1, strlen($title) - 2);
+
+        $address = $dom->find('div.top-info')[0]->find('span.location')[0]->plaintext;
+        $data['address'] = substr(preg_replace('/\s+/', ' ', $address), 1, strlen(preg_replace('/\s+/', ' ', $address)) - 2);
+
+        // ! unit_types
+        $units = $dom->find('div.top-info')[0]->find('ul.specs')[0]->find('li');
+        foreach ($units as $key => $unit) {
+            $tmp = explode(':', $unit->plaintext);
+            if( count($tmp) == 2 ) {
+                $data[\StringHelper::camel2Snake($tmp[0])] = $tmp[1];
+            }
+        }
+
+        // type, total_floor, total_units, year_built, available
+        $infos = $dom->find('div.listing-info')[1]->find('p');
+        foreach ($infos as $info) {
+            $property = explode(': ', $info->plaintext);
+            if( count($property) == 2 ) {
+                $data[\StringHelper::camel2Snake($property[0])] = $property[1];
+            }
+        }
+
+        // facilities
+        $data['facilities'] = '';
+        if( count($dom->find('div.amenity')) ) {
+            $facilities = $dom->find('div.amenity')[0]->find('ul.list-unstyled')[0]->find('li');
+            foreach ($facilities as $key => $facility) {
+                $data['facilities'] .= $key ? ",$facility->plaintext" : $facility->plaintext;
+            }
+        }
+
+        // image
+        $data['image_url'] = $dom->find('div.p-img')[0]->find('img.img-responsive')[0]->getAttribute('data-src');
+
+        // map
+        $page = $this->get_url($url);
+        $parsed = $this->get_string_between($page, "= new Array(", ');');
+        $parsed = preg_replace('/\s+/', ' ', $parsed);
+        $parsed = substr($parsed, 3, strlen($parsed) - 6);
+        $lat= $this->get_string_between($parsed, 'Lat:', '],');
+        $lng= $this->get_string_between($parsed, 'Lng:', '],');
+        $data['latitude'] = substr($lat, 3, strlen($lat) - 4);
+        $data['longitude'] = substr($lng, 3, strlen($lng) - 4);
+
+        return $data;
+    }
+    // ------------ PropertyAsia.ph ------------
 }
