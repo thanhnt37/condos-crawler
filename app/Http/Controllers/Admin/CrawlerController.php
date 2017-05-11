@@ -222,8 +222,6 @@ class CrawlerController extends Controller
     {
         $url = $request->get('url', '');
 
-        dd($this->getDetailPropertyasia($url));
-
         $urls = $this->getListPropertyasia($url);
         foreach ( $urls as $url ) {
             $condo = $this->getDetailPropertyasia($url);
