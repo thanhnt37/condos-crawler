@@ -45,8 +45,8 @@ class BuildingController extends Controller
 
         $buildings = [];
         $index = 0;
-        foreach ( $condos as $key => $condo ) {
-            foreach ( $similars as $key2 => $similar ) {
+        foreach ( $similars as $key2 => $similar ) {
+            foreach ( $condos as $key => $condo ) {
                 $check = $this->checkSimilar($condo, $similar);
                 $buildings[$index]['condo_id'] = $key;
                 $buildings[$index]['similar_id'] = $key2;
