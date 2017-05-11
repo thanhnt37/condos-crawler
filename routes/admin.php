@@ -38,6 +38,7 @@
                 \Route::post('/propertyasia', 'Admin\CrawlerController@propertyasia');
             });
 
+            \Route::get('/buildings', 'Admin\BuildingController@index');
         });
 
         \Route::group(['middleware' => ['admin.has_role.admin']], function () {

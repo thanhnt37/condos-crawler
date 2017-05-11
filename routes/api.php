@@ -12,6 +12,8 @@
             \Route::post('forgot-password', 'API\V1\PasswordController@forgotPassword');
 
             \Route::post('signup', 'API\V1\AuthController@signUp');
+            \Route::post('merge-building', 'API\V1\BuildingController@merge');
+            \Route::post('import-building', 'API\V1\BuildingController@import');
         });
 
     });

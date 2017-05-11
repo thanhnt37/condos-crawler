@@ -3,10 +3,13 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\BaseRequest;
 use App\Repositories\CondominiumsmanilaRepositoryInterface;
 use App\Repositories\PhrealestateRepositoryInterface;
+use App\Repositories\PhilpropertyexpertRepositoryInterface;
+use App\Repositories\PropertyasiaRepositoryInterface;
 
-class IndexController extends Controller
+class BuildingController extends Controller
 {
     /** @var \App\Repositories\CondominiumsmanilaRepositoryInterface */
     protected $condominiumsmanilaRepository;
@@ -14,52 +17,68 @@ class IndexController extends Controller
     /** @var \App\Repositories\PhrealestateRepositoryInterface */
     protected $phrealestateRepository;
 
+    /** @var \App\Repositories\PhilpropertyexpertRepositoryInterface */
+    protected $philpropertyexpertRepository;
+
+    /** @var \App\Repositories\PropertyasiaRepositoryInterface */
+    protected $propertyasiaRepository;
+
     public function __construct(
         CondominiumsmanilaRepositoryInterface   $condominiumsmanilaRepository,
-        PhrealestateRepositoryInterface         $phrealestateRepository
+        PhrealestateRepositoryInterface         $phrealestateRepository,
+        PhilpropertyexpertRepositoryInterface   $philpropertyexpertRepository,
+        PropertyasiaRepositoryInterface         $propertyasiaRepository
     )
     {
         $this->condominiumsmanilaRepository     = $condominiumsmanilaRepository;
         $this->phrealestateRepository           = $phrealestateRepository;
+        $this->philpropertyexpertRepository     = $philpropertyexpertRepository;
+        $this->propertyasiaRepository           = $propertyasiaRepository;
     }
 
-    public function index()
+    public function index(BaseRequest $request)
     {
-        $keyword = 'Greenbelt Axcelsior';
-        $input = 'Greenbelt Excelsior by Megaworld asdada asdaaas vfdb d db  d ';
+        $site       = $request->get('site', 'phrealestate');
+        $repos      = $site . 'Repository';
+        $condos     = $this->propertyasiaRepository->all()->pluck('title', 'id');
+        $similars   = $this->$repos->all()->pluck('title', 'id');
 
-        $philpropertyexperts = $this->phrealestateRepository->all()->pluck('title', 'id');
-        $condominiumsmanilas = $this->condominiumsmanilaRepository->all()->pluck('title', 'id');
+        $buildings = [];
+        $index = 0;
+        foreach ( $condos as $key => $condo ) {
+            foreach ( $similars as $key2 => $similar ) {
+                $check = $this->checkSimilar($condo, $similar);
+                $buildings[$index]['condo_id'] = $key;
+                $buildings[$index]['similar_id'] = $key2;
+                $buildings[$index]['condo'] = $condo;
+                $buildings[$index]['similar'] = $similar;
+                $buildings[$index]['percent_similar'] = $check['percent_similar'];
+                $buildings[$index]['percent_keyword'] = $check['percent_keyword'];
+                $index++;
+                if( ($check['percent_similar'] <= 10 && $check['percent_keyword'] <= 10) || ($check['percent_similar'] >= 75 && $check['percent_keyword'] >= 75) ) {
 
-        foreach ( $philpropertyexperts as $key => $philpropertyexpert ) {
-            foreach ( $condominiumsmanilas as $key2 => $condominiumsmanila ) {
-                if( $this->checkSimilar($philpropertyexpert, $condominiumsmanila) ) {
-                    echo $philpropertyexpert . '|-----|' . $condominiumsmanila . '<br>';
-                } else {
-//                    echo 'no similar';
                 }
             }
         }
 
-        return view('pages.admin.' . config('view.admin') . '.index', [
+        return view('pages.admin.' . config('view.admin') . '.buildings.index', [
+            'buildings' => $buildings,
+            'site'      => $site
         ]);
     }
 
     private function checkSimilar($keyword, $text)
     {
-        $input =  $this->generateKeywordsFromText($text);
+//        $input =  $this->generateKeywordsFromText($text);
         $input =  strtolower($text);
 
         $similar        = similar_text(strtolower($keyword), $input, $percentSimilar);
-        $percentKeyword = ($similar/strlen($keyword)) * 100;
+        $percentKeyword = (strlen($keyword) == 0) ? 0 : (($similar/strlen($keyword)) * 100);
 
-        if( $percentSimilar >= 50 || $percentKeyword >= 85 ) {
-            echo "percentSimilar: $percentSimilar, percentKeyword: $percentKeyword | ";
-            return true;
-        } else {
-            return false;
-        }
-        return ( $percentSimilar >= 50 || $percentKeyword >= 85 ) ? true : false;
+        $data['percent_similar'] = $percentSimilar;
+        $data['percent_keyword'] = $percentKeyword;
+
+        return $data;
     }
 
     private function generateKeywordsFromText($text){
