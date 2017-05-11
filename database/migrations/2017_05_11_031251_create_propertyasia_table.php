@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use \App\Database\Migration;
 
-class CreatecondominiumsmanilasTable extends Migration
+class CreatepropertyasiaTable extends Migration
 {
     /**
      * Run the migrations.
@@ -12,7 +12,7 @@ class CreatecondominiumsmanilasTable extends Migration
      */
     public function up()
     {
-        Schema::create('condominiumsmanilas', function (Blueprint $table) {
+        Schema::create('propertyasia', function (Blueprint $table) {
             $table->bigIncrements('id');
 
             $table->string('title');
@@ -44,7 +44,7 @@ class CreatecondominiumsmanilasTable extends Migration
             $table->timestamps();
         });
 
-        $this->updateTimestampDefaultValue('condominiumsmanilas', ['updated_at'], ['created_at']);
+        $this->updateTimestampDefaultValue('propertyasia', ['updated_at'], ['created_at']);
     }
 
     /**
@@ -54,6 +54,6 @@ class CreatecondominiumsmanilasTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('condominiumsmanilas');
+        Schema::dropIfExists('propertyasia');
     }
 }

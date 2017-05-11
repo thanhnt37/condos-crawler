@@ -246,7 +246,7 @@ class CrawlerController extends Controller
         $elems = str_replace("\t", '', $elems[0]->plaintext);
 
         $title = $dom->find('h3 a[itemprop=url]');
-        $condos['title'] = substr($title[0]->plaintext, 0,  strlen($title[0]->plaintext) - 1);
+        $condos['title'] = substr($title[0]->plaintext, 0,  strlen($title[0]->plaintext));
 
         $descriptions = $dom->find('p[style=text-align: justify;]');
         $condos['descriptions'] = isset($descriptions[0]->plaintext) ? substr($descriptions[0]->plaintext, 3,  strlen($descriptions[0]->plaintext) - 9) : null;

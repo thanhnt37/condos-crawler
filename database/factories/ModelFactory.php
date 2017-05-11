@@ -219,4 +219,29 @@ $factory->define(App\Models\Philpropertyexpert::class, function (Faker\Generator
     ];
 });
 
+$factory->define(App\Models\Propertyasia::class, function (Faker\Generator $faker) {
+    return [
+        'id' => '',
+        'title' => '',
+        'postal_code' => '',
+        'country' => '',
+        'province' => '',
+        'city' => '',
+        'address' => '',
+        'building_type' => '',
+        'latitude' => '',
+        'longitude' => '',
+        'completion_year' => '',
+        'number_floor' => '',
+        'number_unit' => '',
+        'developer_name' => '',
+        'facilities' => '',
+        'unit_size' => '',
+        'condo_url' => '',
+        'developer_url' => '',
+        'image_url' => '',
+        'descriptions' => '',
+    ];
+});
+
 /* NEW MODEL FACTORY */
