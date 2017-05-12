@@ -37,6 +37,7 @@
                 \Route::post('/philpropertyexpert', 'Admin\CrawlerController@philpropertyexpert');
                 \Route::post('/propertyasia', 'Admin\CrawlerController@propertyasia');
                 \Route::post('/avidaland', 'Admin\CrawlerController@avidaland');
+                \Route::post('/atayala', 'Admin\CrawlerController@atayala');
             });
 
             \Route::get('/buildings', 'Admin\BuildingController@index');

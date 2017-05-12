@@ -141,4 +141,28 @@
             </div>
         </div>
     </form>
+
+    <form action="{!! action('Admin\CrawlerController@atayala') !!}" method="POST" enctype="multipart/form-data">
+        {!! csrf_field() !!}
+
+        <div class="box box-primary">
+            <div class="box-header with-border">
+            </div>
+
+            <div class="box-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group ">
+                            <label for="url">atayala.com URL</label>
+                            <input type="text" class="form-control" id="url" name="url"  value="http://www.atayala.com/ayala-land-properties-for-sale/properties/all-properties/for-sale">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="box-footer">
+                <button type="submit" class="btn btn-primary btn-sm" style="width: 125px;">Crawl</button>
+            </div>
+        </div>
+    </form>
 @stop

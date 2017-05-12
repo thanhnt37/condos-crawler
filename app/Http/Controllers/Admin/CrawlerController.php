@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Helpers\Production\StringHelper;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\BaseRequest;
+use GuzzleHttp\Client;
 use Maatwebsite\Excel\Excel;
 use Yangqi\Htmldom\Htmldom;
 use App\Repositories\CondominiumsmanilaRepositoryInterface;
@@ -12,6 +13,7 @@ use App\Repositories\PhrealestateRepositoryInterface;
 use App\Repositories\PhilpropertyexpertRepositoryInterface;
 use App\Repositories\PropertyasiaRepositoryInterface;
 use App\Repositories\AvidalandRepositoryInterface;
+use App\Repositories\AtayalaRepositoryInterface;
 
 class CrawlerController extends Controller
 {
@@ -30,12 +32,16 @@ class CrawlerController extends Controller
     /** @var \App\Repositories\AvidalandRepositoryInterface */
     protected $avidalandRepository;
 
+    /** @var \App\Repositories\AtayalaRepositoryInterface */
+    protected $atayalaRepository;
+
     public function __construct(
         CondominiumsmanilaRepositoryInterface   $condominiumsmanilaRepository,
         PhrealestateRepositoryInterface         $phrealestateRepository,
         PhilpropertyexpertRepositoryInterface   $philpropertyexpertRepository,
         PropertyasiaRepositoryInterface         $propertyasiaRepository,
-        AvidalandRepositoryInterface            $avidalandRepository
+        AvidalandRepositoryInterface            $avidalandRepository,
+        AtayalaRepositoryInterface              $atayalaRepository
     )
     {
         $this->condominiumsmanilaRepository     = $condominiumsmanilaRepository;
@@ -43,6 +49,7 @@ class CrawlerController extends Controller
         $this->philpropertyexpertRepository     = $philpropertyexpertRepository;
         $this->propertyasiaRepository           = $propertyasiaRepository;
         $this->avidalandRepository              = $avidalandRepository;
+        $this->atayalaRepository                = $atayalaRepository;
     }
 
     public function index()
@@ -312,6 +319,57 @@ class CrawlerController extends Controller
                 trans('admin.messages.general.create_success')
             );
     }
+
+    public function atayala(BaseRequest $request)
+    {
+        $url = $request->get('url', '');
+
+        for ($i = 1; $i <= 8; $i++) {
+            $page = $url . '?page=' . $i;
+
+            echo $page . '<br>';
+            $client = new Client();
+            $res = $client->request('GET', $page);
+
+            $condos = json_decode($res->getBody(), true)['results'];
+
+            foreach ( $condos as $condo ) {
+                $map = explode( '&', $condo['map_url']);
+
+                $data = [
+                    'title'           => isset($condo['project_name']) ? $condo['project_name'] : null,
+                    'postal_code'     => null,
+                    'country'         => 'philippine',
+                    'province'        => null,
+                    'city'            => isset($condo['location']) ? $condo['location'] : null,
+                    'address'         => isset($condo['address']) ? $condo['address'] : null,
+                    'building_type'   => isset($condo['property_types']) ? $condo['property_types'] : null,
+                    'latitude'        => (count($map) == 5) ? substr($map[3], 4, strlen($map[3])) : 0,
+                    'longitude'       => (count($map) == 5) ? substr($map[4], 5, strlen($map[4])) : 0,
+                    'completion_year' => null,
+                    'number_floor'    => null,
+                    'number_unit'     => null,
+                    'facilities'      => null,
+                    'unit_size'       => (isset($condo['unit_size_min']) ? $condo['unit_size_min'] . ' sqm' : null) . (isset($condo['unit_size_max']) ? ' ~ ' . $condo['unit_size_max'] . ' sqm' : null),
+                    'condo_url'       => null,
+                    'developer_name'  => isset($condo['brand']) ? $condo['brand'] : null,
+                    'developer_url'   => null,
+                    'image_url'       => isset($condo['thumbnail']) ? $condo['thumbnail'] : null,
+                    'descriptions'    => null,
+                ];
+
+                $this->atayalaRepository->create($data);
+            }
+        }
+
+        return redirect()
+            ->action('Admin\CrawlerController@index')
+            ->with(
+                'message-success',
+                trans('admin.messages.general.create_success')
+            );
+    }
+
     // ------------ Condominiumsmanila ------------
     private function getListCondominiumsmanila($url)
     {
