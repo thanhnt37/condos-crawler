@@ -111,6 +111,11 @@ class RepositoryBindServiceProvider extends ServiceProvider {
             \App\Repositories\Eloquent\AvidalandRepository::class
         );
 
+        $this->app->singleton(
+            \App\Repositories\AtayalaRepositoryInterface::class,
+            \App\Repositories\Eloquent\AtayalaRepository::class
+        );
+
         /* NEW BINDING */
     }
 }
