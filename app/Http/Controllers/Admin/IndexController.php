@@ -28,18 +28,18 @@ class IndexController extends Controller
         $keyword = 'Greenbelt Axcelsior';
         $input = 'Greenbelt Excelsior by Megaworld asdada asdaaas vfdb d db  d ';
 
-        $philpropertyexperts = $this->phrealestateRepository->all()->pluck('title', 'id');
-        $condominiumsmanilas = $this->condominiumsmanilaRepository->all()->pluck('title', 'id');
-
-        foreach ( $philpropertyexperts as $key => $philpropertyexpert ) {
-            foreach ( $condominiumsmanilas as $key2 => $condominiumsmanila ) {
-                if( $this->checkSimilar($philpropertyexpert, $condominiumsmanila) ) {
-                    echo $philpropertyexpert . '|-----|' . $condominiumsmanila . '<br>';
-                } else {
-//                    echo 'no similar';
-                }
-            }
-        }
+//        $philpropertyexperts = $this->phrealestateRepository->all()->pluck('title', 'id');
+//        $condominiumsmanilas = $this->condominiumsmanilaRepository->all()->pluck('title', 'id');
+//
+//        foreach ( $philpropertyexperts as $key => $philpropertyexpert ) {
+//            foreach ( $condominiumsmanilas as $key2 => $condominiumsmanila ) {
+//                if( $this->checkSimilar($philpropertyexpert, $condominiumsmanila) ) {
+//                    echo $philpropertyexpert . '|-----|' . $condominiumsmanila . '<br>';
+//                } else {
+////                    echo 'no similar';
+//                }
+//            }
+//        }
 
         return view('pages.admin.' . config('view.admin') . '.index', [
         ]);
