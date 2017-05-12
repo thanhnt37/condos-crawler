@@ -133,8 +133,8 @@
             @foreach( $buildings as $building )
                 <tr>
                     <td>{{ $building['condo_id'] }}</td>
-                    <td>{{ $building['condo'] }}</td>
-                    <td>{{ $building['similar'] }}</td>
+                    <td><a target="_blank" href="{{action('Admin\PropertyasiaController@show', $building['condo_id'])}}">{{ $building['condo'] }}</a></td>
+                    <td><a target="_blank" href="{{action('Admin\\' . ucfirst($site) . 'Controller@show', $building['similar_id'])}}">{{ $building['similar'] }}</a></td>
                     <td>
                         @if($building['percent_similar'] >= 75)
                             <span style="color: #3c8dbc">{{ number_format($building['percent_similar'], 2) }} % (hight)</span>
