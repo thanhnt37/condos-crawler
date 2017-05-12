@@ -53,7 +53,8 @@ class BuildingController extends Controller
         $site       = $request->get('site', 'phrealestate');
         $repos      = $site . 'Repository';
         $condos     = $this->propertyasiaRepository->all()->pluck('title', 'id');
-        $similars   = $this->$repos->get('id', 'asc', 0, 15)->pluck('title', 'id');
+//        $similars   = $this->$repos->get('id', 'asc', 0, 15)->pluck('title', 'id');
+        $similars   = $this->$repos->all()->pluck('title', 'id');
 
         $buildings = [];
         $index = 0;
@@ -61,14 +62,16 @@ class BuildingController extends Controller
             foreach ( $condos as $key => $condo ) {
                 $check = $this->checkSimilar($condo, $similar);
 
-                $buildings[$index]['condo_id'] = $key;
-                $buildings[$index]['similar_id'] = $key2;
-                $buildings[$index]['condo'] = $condo;
-                $buildings[$index]['similar'] = $similar;
-                $buildings[$index]['percent_similar'] = $check['percent_similar'];
-                $buildings[$index]['percent_keyword'] = $check['percent_keyword'];
+                if( $check['percent_similar'] >= 80 || $check['percent_keyword'] >= 80 ) {
+                    $buildings[$index]['condo_id'] = $key;
+                    $buildings[$index]['similar_id'] = $key2;
+                    $buildings[$index]['condo'] = $condo;
+                    $buildings[$index]['similar'] = $similar;
+                    $buildings[$index]['percent_similar'] = $check['percent_similar'];
+                    $buildings[$index]['percent_keyword'] = $check['percent_keyword'];
 
-                $index++;
+                    $index++;
+                }
             }
         }
 
