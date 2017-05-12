@@ -63,7 +63,7 @@
                     <div class="col-md-12">
                         <div class="form-group @if ($errors->has('title')) has-error @endif">
                             <label for="title">@lang('admin.pages.philpropertyexperts.columns.title')</label>
-                            <input type="text" class="form-control" id="title" name="title" required
+                            <input type="text" class="form-control" id="title" name="title"
                                    value="{{ old('title') ? old('title') : $philpropertyexpert->title }}">
                         </div>
                     </div>
@@ -73,7 +73,7 @@
                     <div class="col-md-12">
                         <div class="form-group @if ($errors->has('postal_code')) has-error @endif">
                             <label for="postal_code">@lang('admin.pages.philpropertyexperts.columns.postal_code')</label>
-                            <input type="text" class="form-control" id="postal_code" name="postal_code" required
+                            <input type="text" class="form-control" id="postal_code" name="postal_code"
                                    value="{{ old('postal_code') ? old('postal_code') : $philpropertyexpert->postal_code }}">
                         </div>
                     </div>
@@ -83,7 +83,7 @@
                     <div class="col-md-12">
                         <div class="form-group @if ($errors->has('country')) has-error @endif">
                             <label for="country">@lang('admin.pages.philpropertyexperts.columns.country')</label>
-                            <input type="text" class="form-control" id="country" name="country" required
+                            <input type="text" class="form-control" id="country" name="country"
                                    value="{{ old('country') ? old('country') : $philpropertyexpert->country }}">
                         </div>
                     </div>
@@ -93,7 +93,7 @@
                     <div class="col-md-12">
                         <div class="form-group @if ($errors->has('province')) has-error @endif">
                             <label for="province">@lang('admin.pages.philpropertyexperts.columns.province')</label>
-                            <input type="text" class="form-control" id="province" name="province" required
+                            <input type="text" class="form-control" id="province" name="province"
                                    value="{{ old('province') ? old('province') : $philpropertyexpert->province }}">
                         </div>
                     </div>
@@ -103,7 +103,7 @@
                     <div class="col-md-12">
                         <div class="form-group @if ($errors->has('city')) has-error @endif">
                             <label for="city">@lang('admin.pages.philpropertyexperts.columns.city')</label>
-                            <input type="text" class="form-control" id="city" name="city" required
+                            <input type="text" class="form-control" id="city" name="city"
                                    value="{{ old('city') ? old('city') : $philpropertyexpert->city }}">
                         </div>
                     </div>
@@ -113,7 +113,7 @@
                     <div class="col-md-12">
                         <div class="form-group @if ($errors->has('address')) has-error @endif">
                             <label for="address">@lang('admin.pages.philpropertyexperts.columns.address')</label>
-                            <input type="text" class="form-control" id="address" name="address" required
+                            <input type="text" class="form-control" id="address" name="address"
                                    value="{{ old('address') ? old('address') : $philpropertyexpert->address }}">
                         </div>
                     </div>
@@ -123,7 +123,7 @@
                     <div class="col-md-12">
                         <div class="form-group @if ($errors->has('building_type')) has-error @endif">
                             <label for="building_type">@lang('admin.pages.philpropertyexperts.columns.building_type')</label>
-                            <input type="text" class="form-control" id="building_type" name="building_type" required
+                            <input type="text" class="form-control" id="building_type" name="building_type"
                                    value="{{ old('building_type') ? old('building_type') : $philpropertyexpert->building_type }}">
                         </div>
                     </div>
@@ -133,7 +133,7 @@
                     <div class="col-md-12">
                         <div class="form-group @if ($errors->has('latitude')) has-error @endif">
                             <label for="latitude">@lang('admin.pages.philpropertyexperts.columns.latitude')</label>
-                            <input type="text" class="form-control" id="latitude" name="latitude" required
+                            <input type="text" class="form-control" id="latitude" name="latitude"
                                    value="{{ old('latitude') ? old('latitude') : $philpropertyexpert->latitude }}">
                         </div>
                     </div>
@@ -143,7 +143,7 @@
                     <div class="col-md-12">
                         <div class="form-group @if ($errors->has('longitude')) has-error @endif">
                             <label for="longitude">@lang('admin.pages.philpropertyexperts.columns.longitude')</label>
-                            <input type="text" class="form-control" id="longitude" name="longitude" required
+                            <input type="text" class="form-control" id="longitude" name="longitude"
                                    value="{{ old('longitude') ? old('longitude') : $philpropertyexpert->longitude }}">
                         </div>
                     </div>
@@ -153,7 +153,7 @@
                     <div class="col-md-12">
                         <div class="form-group @if ($errors->has('completion_year')) has-error @endif">
                             <label for="completion_year">@lang('admin.pages.philpropertyexperts.columns.completion_year')</label>
-                            <input type="text" class="form-control" id="completion_year" name="completion_year" required
+                            <input type="text" class="form-control" id="completion_year" name="completion_year"
                                    value="{{ old('completion_year') ? old('completion_year') : $philpropertyexpert->completion_year }}">
                         </div>
                     </div>
@@ -163,7 +163,7 @@
                     <div class="col-md-12">
                         <div class="form-group @if ($errors->has('number_floor')) has-error @endif">
                             <label for="number_floor">@lang('admin.pages.philpropertyexperts.columns.number_floor')</label>
-                            <input type="text" class="form-control" id="number_floor" name="number_floor" required
+                            <input type="text" class="form-control" id="number_floor" name="number_floor"
                                    value="{{ old('number_floor') ? old('number_floor') : $philpropertyexpert->number_floor }}">
                         </div>
                     </div>
@@ -173,7 +173,7 @@
                     <div class="col-md-12">
                         <div class="form-group @if ($errors->has('number_unit')) has-error @endif">
                             <label for="number_unit">@lang('admin.pages.philpropertyexperts.columns.number_unit')</label>
-                            <input type="text" class="form-control" id="number_unit" name="number_unit" required
+                            <input type="text" class="form-control" id="number_unit" name="number_unit"
                                    value="{{ old('number_unit') ? old('number_unit') : $philpropertyexpert->number_unit }}">
                         </div>
                     </div>
@@ -183,7 +183,7 @@
                     <div class="col-md-12">
                         <div class="form-group @if ($errors->has('developer_name')) has-error @endif">
                             <label for="developer_name">@lang('admin.pages.philpropertyexperts.columns.developer_name')</label>
-                            <input type="text" class="form-control" id="developer_name" name="developer_name" required
+                            <input type="text" class="form-control" id="developer_name" name="developer_name"
                                    value="{{ old('developer_name') ? old('developer_name') : $philpropertyexpert->developer_name }}">
                         </div>
                     </div>
@@ -193,7 +193,7 @@
                     <div class="col-md-12">
                         <div class="form-group @if ($errors->has('facilities')) has-error @endif">
                             <label for="facilities">@lang('admin.pages.philpropertyexperts.columns.facilities')</label>
-                            <textarea name="facilities" class="form-control" rows="5" required
+                            <textarea name="facilities" class="form-control" rows="5"
                                       placeholder="@lang('admin.pages.philpropertyexperts.columns.facilities')">{{ old('facilities') ? old('facilities') : $philpropertyexpert->facilities }}</textarea>
                         </div>
                     </div>
@@ -203,7 +203,7 @@
                     <div class="col-md-12">
                         <div class="form-group @if ($errors->has('unit_size')) has-error @endif">
                             <label for="unit_size">@lang('admin.pages.philpropertyexperts.columns.unit_size')</label>
-                            <input type="text" class="form-control" id="unit_size" name="unit_size" required
+                            <input type="text" class="form-control" id="unit_size" name="unit_size"
                                    value="{{ old('unit_size') ? old('unit_size') : $philpropertyexpert->unit_size }}">
                         </div>
                     </div>
@@ -213,7 +213,7 @@
                     <div class="col-md-12">
                         <div class="form-group @if ($errors->has('condo_url')) has-error @endif">
                             <label for="condo_url">@lang('admin.pages.philpropertyexperts.columns.condo_url')</label>
-                            <input type="text" class="form-control" id="condo_url" name="condo_url" required
+                            <input type="text" class="form-control" id="condo_url" name="condo_url"
                                    value="{{ old('condo_url') ? old('condo_url') : $philpropertyexpert->condo_url }}">
                         </div>
                     </div>
@@ -223,7 +223,7 @@
                     <div class="col-md-12">
                         <div class="form-group @if ($errors->has('developer_url')) has-error @endif">
                             <label for="developer_url">@lang('admin.pages.philpropertyexperts.columns.developer_url')</label>
-                            <input type="text" class="form-control" id="developer_url" name="developer_url" required
+                            <input type="text" class="form-control" id="developer_url" name="developer_url"
                                    value="{{ old('developer_url') ? old('developer_url') : $philpropertyexpert->developer_url }}">
                         </div>
                     </div>
@@ -233,7 +233,7 @@
                     <div class="col-md-12">
                         <div class="form-group @if ($errors->has('descriptions')) has-error @endif">
                             <label for="descriptions">@lang('admin.pages.philpropertyexperts.columns.descriptions')</label>
-                            <textarea name="descriptions" class="form-control" rows="5" required
+                            <textarea name="descriptions" class="form-control" rows="5"
                                       placeholder="@lang('admin.pages.philpropertyexperts.columns.descriptions')">{{ old('descriptions') ? old('descriptions') : $philpropertyexpert->descriptions }}</textarea>
                         </div>
                     </div>

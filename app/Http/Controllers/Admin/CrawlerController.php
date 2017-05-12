@@ -262,6 +262,50 @@ class CrawlerController extends Controller
             );
 
     }
+
+    public function avidaland(BaseRequest $request)
+    {
+        $url = $request->get('url', '');
+
+        $urls = $this->getListAvidaland($url);
+        foreach ( $urls as $url ) {
+            $condo = $this->getDetailAvidaland($url);
+            if( !$condo ) {
+                continue;
+            }
+
+            $this->propertyasiaRepository->create(
+                [
+                    'title'           => isset($condo['title']) ? $condo['title'] : 'null',
+                    'postal_code'     => null,
+                    'country'         => 'philippine',
+                    'province'        => null,
+                    'city'            => null,
+                    'address'         => isset($condo['address']) ? $condo['address'] : null,
+                    'building_type'   => isset($condo['type']) ? $condo['type'] : null,
+                    'latitude'        => isset($condo['latitude']) ? $condo['latitude'] : 0,
+                    'longitude'       => isset($condo['longitude']) ? $condo['longitude'] : 0,
+                    'completion_year' => isset($condo['available']) ? $condo['available'] : null,
+                    'number_floor'    => isset($condo['total_floor']) ? $condo['total_floor'] : null,
+                    'number_unit'     => isset($condo['total_units']) ? $condo['total_units'] : null,
+                    'facilities'      => isset($condo['facilities']) ? $condo['facilities'] : null,
+                    'unit_size'       => isset($condo['unit_types']) ? $condo['unit_types'] : null,
+                    'condo_url'       => null,
+                    'developer_name'  => null,
+                    'developer_url'   => null,
+                    'image_url'       => isset($condo['image_url']) ? $condo['image_url'] : null,
+                    'descriptions'    => null,
+                ]
+            );
+        }
+
+        return redirect()
+            ->action('Admin\CrawlerController@index')
+            ->with(
+                'message-success',
+                trans('admin.messages.general.create_success')
+            );
+    }
     // ------------ Condominiumsmanila ------------
     private function getListCondominiumsmanila($url)
     {
@@ -360,7 +404,7 @@ class CrawlerController extends Controller
 
     }
 
-    public function getDetailPhilpropertyexpert($url)
+    private function getDetailPhilpropertyexpert($url)
     {
         try {
             $dom = new Htmldom($url);
@@ -384,7 +428,7 @@ class CrawlerController extends Controller
     // ------------ philpropertyexpert ------------
 
     // ------------ PropertyAsia.ph ------------
-    public function getListPropertyasia($url)
+    private function getListPropertyasia($url)
     {
         try {
             $dom = new Htmldom($url);
@@ -402,7 +446,7 @@ class CrawlerController extends Controller
         return array_unique($urls);
     }
 
-    public function getDetailPropertyasia($url)
+    private function getDetailPropertyasia($url)
     {
         try {
             $dom = new Htmldom($url);
@@ -459,4 +503,54 @@ class CrawlerController extends Controller
         return $data;
     }
     // ------------ PropertyAsia.ph ------------
+
+    // ------------ Avidaland.com ------------
+    private function getListAvidaland($url)
+    {
+        try {
+            $dom = new Htmldom($url);
+        } catch (\Exception $e) {
+            return null;
+        }
+
+        $elems = $dom->find('h3.property-project-name');
+
+        $urls = [];
+        foreach ( $elems as $elem ) {
+            $urls[] = 'http://avidaland.com/' . $elem->find('a')[0]->href;
+        }
+
+        return array_unique($urls);
+    }
+
+    private function getDetailAvidaland($url)
+    {
+        try {
+            $dom = new Htmldom($url);
+        } catch (\Exception $e) {
+            return null;
+        }
+
+        $data['title'] = $dom->find('div#projectConcept')[0]->find('h1')[0]->plaintext;
+
+        // location, unit_sizes, price_range, status, complete_year
+        $infos = $dom->find('div#projectConcept')[0]->find('div.col-5');
+        foreach ( $infos as $info ) {
+            $tmp = explode(':', $info->plaintext);
+            if( count($tmp) == 2 ) {
+                $field = preg_replace('/\s+/', ' ', $tmp[1]);
+                $data[\StringHelper::camel2Snake($tmp[0])] = substr($field, 1, strlen($field) - 2);
+            } elseif (count($tmp) == 1) {
+                $complateYear = preg_replace('/\s+/', ' ', $info->plaintext);
+                $data['complete_year'] = substr($complateYear, 17, strlen($complateYear) - 18);
+            }
+        }
+
+        // map
+        $data['lat'] = $dom->find('div#map_canvas')[0]->getAttribute('lat');
+        $data['lng'] = $dom->find('div#map_canvas')[0]->getAttribute('long');
+
+        return $data;
+    }
+    // ------------ Avidaland.com ------------
 }
