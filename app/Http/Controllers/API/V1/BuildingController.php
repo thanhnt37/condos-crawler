@@ -96,6 +96,10 @@ class BuildingController extends Controller
                 $update[$key] = $similar[$key];
             }
         }
+        if( $condos['latitude'] == 0 || $condos['longitude'] == 0 ) {
+            $update['latitude'] = $similar['latitude'];
+            $update['longitude'] = $similar['longitude'];
+        }
         try {
             $this->propertyasiaRepository->update($condos, $update);
             $this->$repos->delete($similar);
