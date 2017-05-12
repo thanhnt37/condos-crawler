@@ -108,6 +108,7 @@
                             <option value="condominiumsmanila" @if($site == 'condominiumsmanila') selected @endif>condominiumsmanila.com</option>
                             <option value="philpropertyexpert" @if($site == 'philpropertyexpert') selected @endif>philpropertyexpert.com</option>
                             <option value="avidaland" @if($site == 'avidaland') selected @endif>avidaland.com</option>
+                            <option value="atayala" @if($site == 'atayala') selected @endif>atayala.com</option>
                         </select>
                     </h3>
                     <br>
