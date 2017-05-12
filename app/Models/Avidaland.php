@@ -20,6 +20,7 @@ class Avidaland extends Base
      * @var array
      */
     protected $fillable = [
+        'title',
         'postal_code',
         'country',
         'province',
@@ -53,8 +54,8 @@ class Avidaland extends Base
 
     public static function boot()
     {
-        parent::boot();
-        parent::observe(new \App\Observers\AvidalandObserver);
+//        parent::boot();
+//        parent::observe(new \App\Observers\AvidalandObserver);
     }
 
     // Relations
@@ -69,6 +70,7 @@ class Avidaland extends Base
     {
         return [
             'id' => $this->id,
+            'title' => $this->title,
             'postal_code' => $this->postal_code,
             'country' => $this->country,
             'province' => $this->province,

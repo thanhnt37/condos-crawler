@@ -8,6 +8,7 @@ use App\Repositories\CondominiumsmanilaRepositoryInterface;
 use App\Repositories\PhrealestateRepositoryInterface;
 use App\Repositories\PhilpropertyexpertRepositoryInterface;
 use App\Repositories\PropertyasiaRepositoryInterface;
+use App\Repositories\AvidalandRepositoryInterface;
 
 class BuildingController extends Controller
 {
@@ -23,17 +24,22 @@ class BuildingController extends Controller
     /** @var \App\Repositories\PropertyasiaRepositoryInterface */
     protected $propertyasiaRepository;
 
+    /** @var \App\Repositories\AvidalandRepositoryInterface */
+    protected $avidalandRepository;
+
     public function __construct(
         CondominiumsmanilaRepositoryInterface   $condominiumsmanilaRepository,
         PhrealestateRepositoryInterface         $phrealestateRepository,
         PhilpropertyexpertRepositoryInterface   $philpropertyexpertRepository,
-        PropertyasiaRepositoryInterface         $propertyasiaRepository
+        PropertyasiaRepositoryInterface         $propertyasiaRepository,
+        AvidalandRepositoryInterface            $avidalandRepository
     )
     {
         $this->condominiumsmanilaRepository     = $condominiumsmanilaRepository;
         $this->phrealestateRepository           = $phrealestateRepository;
         $this->philpropertyexpertRepository     = $philpropertyexpertRepository;
         $this->propertyasiaRepository           = $propertyasiaRepository;
+        $this->avidalandRepository              = $avidalandRepository;
     }
 
     public function index(BaseRequest $request)

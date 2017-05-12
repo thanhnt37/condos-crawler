@@ -14,6 +14,8 @@ class CreateavidalandsTable extends Migration
     {
         Schema::create('avidalands', function (Blueprint $table) {
             $table->bigIncrements('id');
+            
+            $table->string('title');
 
             $table->string('postal_code')->nullable();
             $table->string('country')->nullable();
@@ -38,7 +40,7 @@ class CreateavidalandsTable extends Migration
 
             $table->string('image_url')->nullable();
             $table->text('descriptions')->nullable();
-            
+
             $table->timestamps();
         });
 

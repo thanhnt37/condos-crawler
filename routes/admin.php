@@ -61,6 +61,7 @@
         \Route::resource('phrealestates', 'Admin\PhrealestateController');
         \Route::resource('philpropertyexperts', 'Admin\PhilpropertyexpertController');
         \Route::resource('propertyasia', 'Admin\PropertyasiaController');
+        \Route::resource('avidalands', 'Admin\AvidalandController');
         /* NEW ADMIN RESOURCE ROUTE */
 
     });

@@ -11,6 +11,7 @@ use App\Repositories\CondominiumsmanilaRepositoryInterface;
 use App\Repositories\PhrealestateRepositoryInterface;
 use App\Repositories\PhilpropertyexpertRepositoryInterface;
 use App\Repositories\PropertyasiaRepositoryInterface;
+use App\Repositories\AvidalandRepositoryInterface;
 
 class CrawlerController extends Controller
 {
@@ -26,17 +27,22 @@ class CrawlerController extends Controller
     /** @var \App\Repositories\PropertyasiaRepositoryInterface */
     protected $propertyasiaRepository;
 
+    /** @var \App\Repositories\AvidalandRepositoryInterface */
+    protected $avidalandRepository;
+
     public function __construct(
         CondominiumsmanilaRepositoryInterface   $condominiumsmanilaRepository,
         PhrealestateRepositoryInterface         $phrealestateRepository,
         PhilpropertyexpertRepositoryInterface   $philpropertyexpertRepository,
-        PropertyasiaRepositoryInterface         $propertyasiaRepository
+        PropertyasiaRepositoryInterface         $propertyasiaRepository,
+        AvidalandRepositoryInterface            $avidalandRepository
     )
     {
         $this->condominiumsmanilaRepository     = $condominiumsmanilaRepository;
         $this->phrealestateRepository           = $phrealestateRepository;
         $this->philpropertyexpertRepository     = $philpropertyexpertRepository;
         $this->propertyasiaRepository           = $propertyasiaRepository;
+        $this->avidalandRepository              = $avidalandRepository;
     }
 
     public function index()
@@ -274,22 +280,22 @@ class CrawlerController extends Controller
                 continue;
             }
 
-            $this->propertyasiaRepository->create(
+            $this->avidalandRepository->create(
                 [
                     'title'           => isset($condo['title']) ? $condo['title'] : 'null',
                     'postal_code'     => null,
                     'country'         => 'philippine',
                     'province'        => null,
                     'city'            => null,
-                    'address'         => isset($condo['address']) ? $condo['address'] : null,
-                    'building_type'   => isset($condo['type']) ? $condo['type'] : null,
+                    'address'         => isset($condo['location']) ? $condo['location'] : null,
+                    'building_type'   => 'Condominium',
                     'latitude'        => isset($condo['latitude']) ? $condo['latitude'] : 0,
                     'longitude'       => isset($condo['longitude']) ? $condo['longitude'] : 0,
-                    'completion_year' => isset($condo['available']) ? $condo['available'] : null,
-                    'number_floor'    => isset($condo['total_floor']) ? $condo['total_floor'] : null,
-                    'number_unit'     => isset($condo['total_units']) ? $condo['total_units'] : null,
-                    'facilities'      => isset($condo['facilities']) ? $condo['facilities'] : null,
-                    'unit_size'       => isset($condo['unit_types']) ? $condo['unit_types'] : null,
+                    'completion_year' => isset($condo['complete_year']) ? $condo['complete_year'] : null,
+                    'number_floor'    => null,
+                    'number_unit'     => null,
+                    'facilities'      => null,
+                    'unit_size'       => isset($condo['unit_sizes']) ? $condo['unit_sizes'] : null,
                     'condo_url'       => null,
                     'developer_name'  => null,
                     'developer_url'   => null,
@@ -547,8 +553,9 @@ class CrawlerController extends Controller
         }
 
         // map
-        $data['lat'] = $dom->find('div#map_canvas')[0]->getAttribute('lat');
-        $data['lng'] = $dom->find('div#map_canvas')[0]->getAttribute('long');
+        $data['latitude'] = $dom->find('div#map_canvas')[0]->getAttribute('lat');
+        $data['longitude'] = $dom->find('div#map_canvas')[0]->getAttribute('long');
+        $data['image_url'] = 'http://avidaland.com/' . $dom->find('img.project-banner-img')[0]->src;
 
         return $data;
     }

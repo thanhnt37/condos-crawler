@@ -11,6 +11,7 @@ use App\Repositories\CondominiumsmanilaRepositoryInterface;
 use App\Repositories\PhrealestateRepositoryInterface;
 use App\Repositories\PhilpropertyexpertRepositoryInterface;
 use App\Repositories\PropertyasiaRepositoryInterface;
+use App\Repositories\AvidalandRepositoryInterface;
 
 class BuildingController extends Controller
 {
@@ -35,22 +36,27 @@ class BuildingController extends Controller
     /** @var \App\Repositories\PropertyasiaRepositoryInterface */
     protected $propertyasiaRepository;
 
+    /** @var \App\Repositories\AvidalandRepositoryInterface */
+    protected $avidalandRepository;
+
     public function __construct(
-        UserRepositoryInterface     $userRepository,
-        FileUploadServiceInterface  $fileUploadService,
-        ImageRepositoryInterface    $imageRepository,
+        UserRepositoryInterface                 $userRepository,
+        FileUploadServiceInterface              $fileUploadService,
+        ImageRepositoryInterface                $imageRepository,
         CondominiumsmanilaRepositoryInterface   $condominiumsmanilaRepository,
         PhrealestateRepositoryInterface         $phrealestateRepository,
         PhilpropertyexpertRepositoryInterface   $philpropertyexpertRepository,
-        PropertyasiaRepositoryInterface         $propertyasiaRepository
+        PropertyasiaRepositoryInterface         $propertyasiaRepository,
+        AvidalandRepositoryInterface            $avidalandRepository
     ) {
-        $this->userRepository       = $userRepository;
-        $this->fileUploadService    = $fileUploadService;
-        $this->imageRepository      = $imageRepository;
+        $this->userRepository                   = $userRepository;
+        $this->fileUploadService                = $fileUploadService;
+        $this->imageRepository                  = $imageRepository;
         $this->condominiumsmanilaRepository     = $condominiumsmanilaRepository;
         $this->phrealestateRepository           = $phrealestateRepository;
         $this->philpropertyexpertRepository     = $philpropertyexpertRepository;
         $this->propertyasiaRepository           = $propertyasiaRepository;
+        $this->avidalandRepository              = $avidalandRepository;
     }
 
     public function merge(APIRequest $request)
