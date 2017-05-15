@@ -135,7 +135,7 @@ class CrawlerController extends Controller
                     'country'         => 'philippine',
                     'province'        => null,
                     'city'            => null,
-                    'address'         => (isset($condo['address']) ? $condo['address'] : null) . isset($condo['location']) ? (' - ' . $condo['location']) : null,
+                    'address'         => isset($condo['address']) ? $condo['address'] : null,
                     'building_type'   => isset($condo['project_type']) ? $condo['project_type'] : null,
                     'latitude'        => 0,
                     'longitude'       => 0,
