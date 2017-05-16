@@ -135,7 +135,7 @@ class CrawlerController extends Controller
                     'country'         => 'philippine',
                     'province'        => null,
                     'city'            => null,
-                    'address'         => isset($condo['address']) ? $condo['address'] : null,
+                    'address'         => (isset($condo['address']) ? $condo['address'] : null) . ((isset($condo['address']) && isset($condo['address'])) ? ', ' : '') . (isset($condo['location']) ? $condo['location'] : null),
                     'building_type'   => isset($condo['project_type']) ? $condo['project_type'] : null,
                     'latitude'        => 0,
                     'longitude'       => 0,
@@ -437,12 +437,15 @@ class CrawlerController extends Controller
         $condos['image_url'] = $dom->find('img[itemprop=image]')[0]->src;
         foreach ( explode("\r\n", $elems) as $key => $condo ) {
             $property = explode(':', $condo);
-            if( count($property) ==2 ) {
+            if( count($property) == 2 ) {
                 $condos[\StringHelper::camel2Snake($property[0])] = substr(preg_replace('!\s+!', ' ',$property[1]), 1, strlen(preg_replace('!\s+!', ' ',$property[1])) - 2);
             } else {
                 $condos['condos_url'] = substr(preg_replace('!\s+!', ' ',$property[0]), 1, strlen(preg_replace('!\s+!', ' ',$property[0])) - 7);
             }
         }
+
+        $location = $dom->find('div.media-body')[0]->find('span[itemprop=addressLocality]')[0]->plaintext . ', ' . $dom->find('div.media-body')[0]->find('span[itemprop=addressRegion]')[0]->plaintext;
+        $condos['location'] = substr(preg_replace('!\s+!', ' ',$location), 1, strlen(preg_replace('!\s+!', ' ',$location)) - 2);
 
         return $condos;
     }
