@@ -379,7 +379,7 @@ class CrawlerController extends Controller
                     'facilities'      => isset($condo['facilities']) ? $condo['facilities'] : null,
                     'unit_size'       => isset($condo['unit_types']) ? $condo['unit_types'] : null,
                     'condo_url'       => null,
-                    'developer_name'  => isset($condo['developer']) ? $condo['developer'] : isset($condo['developer_name']) ? $condo['developer_name'] : null,
+                    'developer_name'  => isset($condo['developer']) ? $condo['developer'] : (isset($condo['developer_name']) ? $condo['developer_name'] : null),
                     'developer_url'   => null,
                     'image_url'       => isset($condo['image_url']) ? $condo['image_url'] : null,
                     'descriptions'    => null,
