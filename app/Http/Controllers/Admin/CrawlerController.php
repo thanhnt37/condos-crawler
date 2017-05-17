@@ -130,11 +130,11 @@ class CrawlerController extends Controller
 
             $this->phrealestateRepository->create(
                 [
-                    'title'           => isset($condo['title']) ? $condo['title'] : 'null',
+                    'title'           => isset($condo['title']) ? $condo['title'] : null,
                     'postal_code'     => null,
                     'country'         => 'philippine',
-                    'province'        => null,
-                    'city'            => null,
+                    'province'        => isset($condo['province']) ? $condo['province'] : null,
+                    'city'            => isset($condo['city']) ? $condo['city'] : null,
                     'address'         => (isset($condo['address']) ? $condo['address'] : null) . ((isset($condo['address']) && isset($condo['address'])) ? ', ' : '') . (isset($condo['location']) ? $condo['location'] : null),
                     'building_type'   => isset($condo['project_type']) ? $condo['project_type'] : null,
                     'latitude'        => 0,
@@ -247,8 +247,8 @@ class CrawlerController extends Controller
                     'title'           => isset($condo['title']) ? $condo['title'] : 'null',
                     'postal_code'     => null,
                     'country'         => 'philippine',
-                    'province'        => null,
-                    'city'            => null,
+                    'province'        => isset($condo['province']) ? $condo['province'] : null,
+                    'city'            => isset($condo['city']) ? $condo['city'] : null,
                     'address'         => isset($condo['address']) ? $condo['address'] : null,
                     'building_type'   => isset($condo['type']) ? $condo['type'] : null,
                     'latitude'        => isset($condo['latitude']) ? $condo['latitude'] : 0,
@@ -443,9 +443,12 @@ class CrawlerController extends Controller
                 $condos['condos_url'] = substr(preg_replace('!\s+!', ' ',$property[0]), 1, strlen(preg_replace('!\s+!', ' ',$property[0])) - 7);
             }
         }
+        $condos['province'] = $dom->find('div.media-body')[0]->find('span[itemprop=addressRegion]')[0]->plaintext;
+        $condos['province'] = substr(preg_replace('!\s+!', ' ', $condos['province']), 1, strlen($condos['province']) - 3);
+        $condos['city'] = $dom->find('div.media-body')[0]->find('span[itemprop=addressLocality]')[0]->plaintext;
+        $condos['city'] = substr(preg_replace('!\s+!', ' ', $condos['city']), 1, strlen($condos['city']) - 3);
 
-        $location = $dom->find('div.media-body')[0]->find('span[itemprop=addressLocality]')[0]->plaintext . ', ' . $dom->find('div.media-body')[0]->find('span[itemprop=addressRegion]')[0]->plaintext;
-        $condos['location'] = substr(preg_replace('!\s+!', ' ',$location), 1, strlen(preg_replace('!\s+!', ' ',$location)) - 2);
+        $condos['location'] = $condos['city'] . ', ' . $condos['province'];
 
         return $condos;
     }
@@ -526,6 +529,10 @@ class CrawlerController extends Controller
 
         $address = $dom->find('div.top-info')[0]->find('span.location')[0]->plaintext;
         $data['address'] = substr(preg_replace('/\s+/', ' ', $address), 1, strlen(preg_replace('/\s+/', ' ', $address)) - 2);
+        if (count(explode(', ', $data['address'])) == 2) {
+            $data['city'] = explode(', ', $data['address'])[0];
+            $data['province'] = explode(', ', $data['address'])[1];
+        }
 
         // ! unit_types
         $units = $dom->find('div.top-info')[0]->find('ul.specs')[0]->find('li');
@@ -555,7 +562,9 @@ class CrawlerController extends Controller
         }
 
         // image
-        $data['image_url'] = $dom->find('div.p-img')[0]->find('img.img-responsive')[0]->getAttribute('data-src');
+        if( isset($dom->find('div.p-img')[0]) && isset($dom->find('div.p-img')[0]->find('img.img-responsive')[0]) ) {
+            $data['image_url'] = $dom->find('div.p-img')[0]->find('img.img-responsive')[0]->getAttribute('data-src');
+        }
 
         // map
         $page = $this->get_url($url);
