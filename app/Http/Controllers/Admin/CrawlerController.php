@@ -240,7 +240,7 @@ class CrawlerController extends Controller
                     'facilities'      => isset($condo['facilities']) ? $condo['facilities'] : null,
                     'unit_size'       => isset($condo['unit_types']) ? $condo['unit_types'] : null,
                     'condo_url'       => null,
-                    'developer_name'  => null,
+                    'developer_name'  => isset($condo['developer_name']) ? $condo['developer_name'] : null,
                     'developer_url'   => null,
                     'image_url'       => isset($condo['image_url']) ? $condo['image_url'] : null,
                     'descriptions'    => null,
@@ -394,7 +394,6 @@ class CrawlerController extends Controller
                 'message-success',
                 trans('admin.messages.general.create_success')
             );
-
     }
 
     // ------------ Condominiumsmanila ------------
@@ -591,6 +590,10 @@ class CrawlerController extends Controller
         // image
         if( isset($dom->find('div.p-img')[0]) && isset($dom->find('div.p-img')[0]->find('img.img-responsive')[0]) ) {
             $data['image_url'] = $dom->find('div.p-img')[0]->find('img.img-responsive')[0]->getAttribute('data-src');
+        }
+
+        if( isset($dom->find('div[itemprop=aggregateRating]')[0]) ) {
+            $data['developer_name'] = $dom->find('div[itemprop=aggregateRating]')[0]->find('h4.sub-title')[0]->plaintext;
         }
 
         // map
