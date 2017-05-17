@@ -14,6 +14,7 @@ use App\Repositories\PhilpropertyexpertRepositoryInterface;
 use App\Repositories\PropertyasiaRepositoryInterface;
 use App\Repositories\AvidalandRepositoryInterface;
 use App\Repositories\AtayalaRepositoryInterface;
+use App\Repositories\PresellingRepositoryInterface;
 
 class CrawlerController extends Controller
 {
@@ -35,13 +36,17 @@ class CrawlerController extends Controller
     /** @var \App\Repositories\AtayalaRepositoryInterface */
     protected $atayalaRepository;
 
+    /** @var \App\Repositories\PresellingRepositoryInterface */
+    protected $presellingRepository;
+
     public function __construct(
         CondominiumsmanilaRepositoryInterface   $condominiumsmanilaRepository,
         PhrealestateRepositoryInterface         $phrealestateRepository,
         PhilpropertyexpertRepositoryInterface   $philpropertyexpertRepository,
         PropertyasiaRepositoryInterface         $propertyasiaRepository,
         AvidalandRepositoryInterface            $avidalandRepository,
-        AtayalaRepositoryInterface              $atayalaRepository
+        AtayalaRepositoryInterface              $atayalaRepository,
+        PresellingRepositoryInterface           $presellingRepository
     )
     {
         $this->condominiumsmanilaRepository     = $condominiumsmanilaRepository;
@@ -50,6 +55,7 @@ class CrawlerController extends Controller
         $this->propertyasiaRepository           = $propertyasiaRepository;
         $this->avidalandRepository              = $avidalandRepository;
         $this->atayalaRepository                = $atayalaRepository;
+        $this->presellingRepository             = $presellingRepository;
     }
 
     public function index()
@@ -356,7 +362,7 @@ class CrawlerController extends Controller
                 continue;
             }
 
-            $this->condominiumsmanilaRepository->create(
+            $this->presellingRepository->create(
                 [
                     'title'           => isset($condo['title']) ? $condo['title'] : 'null',
                     'postal_code'     => null,
@@ -373,7 +379,7 @@ class CrawlerController extends Controller
                     'facilities'      => isset($condo['facilities']) ? $condo['facilities'] : null,
                     'unit_size'       => isset($condo['unit_types']) ? $condo['unit_types'] : null,
                     'condo_url'       => null,
-                    'developer_name'  => isset($condo['developer']) ? $condo['developer'] : $condo['developer_name'],
+                    'developer_name'  => isset($condo['developer']) ? $condo['developer'] : isset($condo['developer_name']) ? $condo['developer_name'] : null,
                     'developer_url'   => null,
                     'image_url'       => isset($condo['image_url']) ? $condo['image_url'] : null,
                     'descriptions'    => null,
@@ -680,7 +686,9 @@ class CrawlerController extends Controller
         }
 
         $data['title'] = $dom->find('h1.page-title')[0]->plaintext;
-        $data['developer_name'] = $dom->find('div.agent-detail')[0]->find('h3')[0]->plaintext;
+        if( isset($dom->find('div.agent-detail')[0]) ) {
+            $data['developer_name'] = $dom->find('div.agent-detail')[0]->find('h3')[0]->plaintext;
+        }
 
         // address, developer, available_units, turnover_date/turnover_date_tower_1
         if( isset($dom->find('ul.additional-details')[0]) ) {
@@ -698,9 +706,11 @@ class CrawlerController extends Controller
         $data['longitude'] = $this->get_string_between($parsed, '"lang":"', '",');
 
         $data['facilities'] = '';
-        $facilities = $dom->find('ul.arrow-bullet-list')[0]->find('li');
-        foreach ( $facilities as $key => $facility ) {
-            $data['facilities'] .= $key ? ', ' . $facility->plaintext : $facility->plaintext;
+        if( isset($dom->find('ul.arrow-bullet-list')[0]) ) {
+            $facilities = $dom->find('ul.arrow-bullet-list')[0]->find('li');
+            foreach ( $facilities as $key => $facility ) {
+                $data['facilities'] .= $key ? ', ' . $facility->plaintext : $facility->plaintext;
+            }
         }
 
         $data['province'] = $dom->find('nav.property-breadcrumbs')[0]->find('li')[1]->plaintext;
