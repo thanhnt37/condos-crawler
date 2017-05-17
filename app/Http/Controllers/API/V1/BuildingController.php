@@ -13,6 +13,7 @@ use App\Repositories\PhilpropertyexpertRepositoryInterface;
 use App\Repositories\PropertyasiaRepositoryInterface;
 use App\Repositories\AvidalandRepositoryInterface;
 use App\Repositories\AtayalaRepositoryInterface;
+use App\Repositories\PresellingRepositoryInterface;
 
 class BuildingController extends Controller
 {
@@ -43,6 +44,9 @@ class BuildingController extends Controller
     /** @var \App\Repositories\AtayalaRepositoryInterface */
     protected $atayalaRepository;
 
+    /** @var \App\Repositories\PresellingRepositoryInterface */
+    protected $presellingRepository;
+
     public function __construct(
         UserRepositoryInterface                 $userRepository,
         FileUploadServiceInterface              $fileUploadService,
@@ -52,7 +56,8 @@ class BuildingController extends Controller
         PhilpropertyexpertRepositoryInterface   $philpropertyexpertRepository,
         PropertyasiaRepositoryInterface         $propertyasiaRepository,
         AvidalandRepositoryInterface            $avidalandRepository,
-        AtayalaRepositoryInterface              $atayalaRepository
+        AtayalaRepositoryInterface              $atayalaRepository,
+        PresellingRepositoryInterface           $presellingRepository
     ) {
         $this->userRepository                   = $userRepository;
         $this->fileUploadService                = $fileUploadService;
@@ -63,6 +68,7 @@ class BuildingController extends Controller
         $this->propertyasiaRepository           = $propertyasiaRepository;
         $this->avidalandRepository              = $avidalandRepository;
         $this->atayalaRepository                = $atayalaRepository;
+        $this->presellingRepository             = $presellingRepository;
     }
 
     public function merge(APIRequest $request)
