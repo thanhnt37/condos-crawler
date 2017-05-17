@@ -23,4 +23,27 @@ class PropertyasiaRepository extends SingleKeyModelRepository implements Propert
         ];
     }
 
+    public function getWithFilter($filter, $order, $direction, $offset, $limit)
+    {
+        $model = $this->getBlankModel();
+
+        $keyword = isset($filter['keyword']) ? $filter['keyword'] : '';
+        $model = $model->where(function ($subquery) use ($keyword) {
+            $subquery->where('title', 'like', '%'.$keyword.'%');
+        });
+
+        return $model->orderBy($order, $direction)->skip($offset)->take($limit)->get();
+    }
+
+    public function countWithFilter($filter)
+    {
+        $model = $this->getBlankModel();
+
+        $keyword = isset($filter['keyword']) ? $filter['keyword'] : '';
+        $model = $model->where(function ($subquery) use ($keyword) {
+            $subquery->where('title', 'like', '%'.$keyword.'%');
+        });
+
+        return $model->count();
+    }
 }

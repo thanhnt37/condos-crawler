@@ -32,6 +32,21 @@ Propertyasia
                         <a href="{!! action('Admin\PropertyasiaController@create') !!}" class="btn btn-block btn-primary btn-sm" style="width: 125px;">@lang('admin.pages.common.buttons.create')</a>
                     </p>
                 </h3>
+
+                <form method="get" accept-charset="utf-8" action="{!! action('Admin\PropertyasiaController@index') !!}">
+                    {!! csrf_field() !!}
+                    <div class="row search-input">
+                        <div class="col-md-12" style="margin-bottom: 10px;">
+                            <div class="search-input-text">
+                                <input type="text" name="l_search_keyword" class="form-control" placeholder="Search here" id="l-search-keyword" value="{{ $keyword }}">
+                                <button type="submit" class="btn">
+                                    <i class="fa fa-search"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+
                 <br>
                 <p style="display: inline-block;">@lang('admin.pages.common.label.search_results', ['count' => $count])</p>
             </div>

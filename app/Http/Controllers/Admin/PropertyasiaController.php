@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Repositories\PropertyasiaRepositoryInterface;
 use App\Http\Requests\Admin\PropertyasiaRequest;
 use App\Http\Requests\PaginationRequest;
+use App\Repositories\PhrealestateRepositoryInterface;
 
 class PropertyasiaController extends Controller
 {
@@ -13,12 +14,16 @@ class PropertyasiaController extends Controller
     /** @var \App\Repositories\PropertyasiaRepositoryInterface */
     protected $propertyasiaRepository;
 
+    /** @var \App\Repositories\PhrealestateRepositoryInterface */
+    protected $phrealestateRepository;
 
     public function __construct(
-        PropertyasiaRepositoryInterface $propertyasiaRepository
+        PropertyasiaRepositoryInterface $propertyasiaRepository,
+        PhrealestateRepositoryInterface $phrealestateRepository
     )
     {
-        $this->propertyasiaRepository = $propertyasiaRepository;
+        $this->propertyasiaRepository   = $propertyasiaRepository;
+        $this->phrealestateRepository   = $phrealestateRepository;
     }
 
     /**
@@ -34,14 +39,25 @@ class PropertyasiaController extends Controller
         $paginate['order']      = $request->order();
         $paginate['direction']  = $request->direction();
         $paginate['baseUrl']    = action( 'Admin\PropertyasiaController@index' );
+        $filter[ 'keyword' ]    = $request->get( 'l_search_keyword', '' );
 
         $count = $this->propertyasiaRepository->count();
         $propertyasias = $this->propertyasiaRepository->get( $paginate['order'], $paginate['direction'], $paginate['offset'], $paginate['limit'] );
+
+        $propertyasias = $this->propertyasiaRepository->getWithFilter(
+            $filter,
+            $paginate[ 'order' ],
+            $paginate[ 'direction' ],
+            $paginate[ 'offset' ],
+            $paginate[ 'limit' ]
+        );
+        $count = $this->propertyasiaRepository->countWithFilter( $filter );
 
         return view('pages.admin.' . config('view.admin') . '.propertyasia.index', [
             'propertyasias'    => $propertyasias,
             'count'         => $count,
             'paginate'      => $paginate,
+            'keyword'       => $filter[ 'keyword' ],
         ]);
     }
 
