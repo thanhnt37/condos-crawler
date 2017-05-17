@@ -206,31 +206,6 @@ class CrawlerController extends Controller
             );
     }
 
-    function get_string_between($string, $start, $end){
-        $string = ' ' . $string;
-        $ini = strpos($string, $start);
-        if ($ini == 0) return '';
-        $ini += strlen($start);
-        $len = strpos($string, $end, $ini) - $ini;
-        return substr($string, $ini, $len);
-    }
-    function get_url($url)
-    {
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_HEADER, 0);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 30);
-        curl_setopt($ch, CURLOPT_URL, $url);
-        $data = curl_exec($ch);
-//        $info = curl_getinfo($ch);
-//        $logfile = fopen("crawler.log","a");
-//        echo fwrite($logfile,'Page ' . $info['url'] . ' fetched in ' . $info['total_time'] . ' seconds. Http status code: ' . $info['http_code'] . "\n");
-//        fclose($logfile);
-        curl_close($ch);
-
-        return $data;
-    }
-
     public function propertyasia(BaseRequest $request)
     {
         $url = $request->get('url', '');
@@ -368,6 +343,52 @@ class CrawlerController extends Controller
                 'message-success',
                 trans('admin.messages.general.create_success')
             );
+    }
+
+    public function preselling(BaseRequest $request)
+    {
+        $url = $request->get('url', '');
+
+        $urls = $this->getListPreselling($url);
+        foreach ( $urls as $url ) {
+            $condo = $this->getDetailPreselling($url);
+            if( !$condo ) {
+                continue;
+            }
+
+            $this->condominiumsmanilaRepository->create(
+                [
+                    'title'           => isset($condo['title']) ? $condo['title'] : 'null',
+                    'postal_code'     => null,
+                    'country'         => 'philippine',
+                    'province'        => isset($condo['province']) ? $condo['province'] : null,
+                    'city'            => isset($condo['city']) ? $condo['city'] : null,
+                    'address'         => isset($condo['address']) ? $condo['address'] : null,
+                    'building_type'   => 'condominium',
+                    'latitude'        => isset($condo['latitude']) ? $condo['latitude'] : 0,
+                    'longitude'       => isset($condo['longitude']) ? $condo['longitude'] : 0,
+                    'completion_year' => isset($condo['turnover_date']) ? $condo['turnover_date'] : null,
+                    'number_floor'    => isset($condo['total_floor']) ? $condo['total_floor'] : null,
+                    'number_unit'     => isset($condo['total_units']) ? $condo['total_units'] : null,
+                    'facilities'      => isset($condo['facilities']) ? $condo['facilities'] : null,
+                    'unit_size'       => isset($condo['unit_types']) ? $condo['unit_types'] : null,
+                    'condo_url'       => null,
+                    'developer_name'  => isset($condo['developer']) ? $condo['developer'] : $condo['developer_name'],
+                    'developer_url'   => null,
+                    'image_url'       => isset($condo['image_url']) ? $condo['image_url'] : null,
+                    'descriptions'    => null,
+                    'original_url'    => $url,
+                ]
+            );
+        }
+
+        return redirect()
+            ->action('Admin\CrawlerController@index')
+            ->with(
+                'message-success',
+                trans('admin.messages.general.create_success')
+            );
+
     }
 
     // ------------ Condominiumsmanila ------------
@@ -630,4 +651,92 @@ class CrawlerController extends Controller
         return $data;
     }
     // ------------ Avidaland.com ------------
+
+    // ------------ Preselling.com.ph ------------
+    private function getListPreselling($url)
+    {
+        try {
+            $dom = new Htmldom($url);
+        } catch (\Exception $e) {
+            return null;
+        }
+
+        $elems = $dom->find('figure');
+
+        $urls = [];
+        foreach ( $elems as $elem ) {
+            $urls[] = $elem->find('a')[0]->href;
+        }
+
+        return array_unique($urls);
+    }
+
+    private function getDetailPreselling($url)
+    {
+        try {
+            $dom = new Htmldom($url);
+        } catch (\Exception $e) {
+            return null;
+        }
+
+        $data['title'] = $dom->find('h1.page-title')[0]->plaintext;
+        $data['developer_name'] = $dom->find('div.agent-detail')[0]->find('h3')[0]->plaintext;
+
+        // address, developer, available_units, turnover_date/turnover_date_tower_1
+        if( isset($dom->find('ul.additional-details')[0]) ) {
+            $infos = $dom->find('ul.additional-details')[0]->find('li');
+            foreach ( $infos as $info ) {
+                $info = explode(': ', preg_replace('/\s+/', ' ', $info->plaintext));
+                $data[\StringHelper::camel2Snake($info[0])] = $info[1];
+            }
+        }
+
+        // map
+        $page = $this->get_url($url);
+        $parsed = $this->get_string_between($page, "propertyMarkerInfo =", '}');
+        $data['latitude'] = $this->get_string_between($parsed, '"lat":"', '",');
+        $data['longitude'] = $this->get_string_between($parsed, '"lang":"', '",');
+
+        $data['facilities'] = '';
+        $facilities = $dom->find('ul.arrow-bullet-list')[0]->find('li');
+        foreach ( $facilities as $key => $facility ) {
+            $data['facilities'] .= $key ? ', ' . $facility->plaintext : $facility->plaintext;
+        }
+
+        $data['province'] = $dom->find('nav.property-breadcrumbs')[0]->find('li')[1]->plaintext;
+        if( isset($data['address']) && count(explode(', ', $data['address'])) == 2 ) {
+            $data['city'] = explode(', ', $data['address'])[1];
+        }
+
+        $data['image_url'] = $dom->find('div#property-featured-image')[0]->find('img')[0]->src;
+
+        return $data;
+    }
+    // ------------ Preselling.com.ph ------------
+
+
+    private function get_string_between($string, $start, $end){
+        $string = ' ' . $string;
+        $ini = strpos($string, $start);
+        if ($ini == 0) return '';
+        $ini += strlen($start);
+        $len = strpos($string, $end, $ini) - $ini;
+        return substr($string, $ini, $len);
+    }
+    private function get_url($url)
+    {
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_HEADER, 0);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 30);
+        curl_setopt($ch, CURLOPT_URL, $url);
+        $data = curl_exec($ch);
+//        $info = curl_getinfo($ch);
+//        $logfile = fopen("crawler.log","a");
+//        echo fwrite($logfile,'Page ' . $info['url'] . ' fetched in ' . $info['total_time'] . ' seconds. Http status code: ' . $info['http_code'] . "\n");
+//        fclose($logfile);
+        curl_close($ch);
+
+        return $data;
+    }
 }
