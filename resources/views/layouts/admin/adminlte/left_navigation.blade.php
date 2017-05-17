@@ -51,6 +51,7 @@
             <li @if( $menu=='philpropertyexperts') class="active" @endif ><a href="{!! \URL::action('Admin\PhilpropertyexpertController@index') !!}"><i class="fa fa-users"></i> <span>Philpropertyexperts</span></a></li>
             <li @if( $menu=='avidalands') class="active" @endif ><a href="{!! \URL::action('Admin\AvidalandController@index') !!}"><i class="fa fa-users"></i> <span>Avidalands</span></a></li>
             <li @if( $menu=='atayalas') class="active" @endif ><a href="{!! \URL::action('Admin\AtayalaController@index') !!}"><i class="fa fa-users"></i> <span>Atayalas</span></a></li>
+            <li @if( $menu=='presellings') class="active" @endif ><a href="{!! \URL::action('Admin\PresellingController@index') !!}"><i class="fa fa-users"></i> <span>Presellings</span></a></li>
             <!-- %%SIDEMENU%% -->
         </ul>
     </section>

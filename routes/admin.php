@@ -65,6 +65,7 @@
         \Route::resource('propertyasia', 'Admin\PropertyasiaController');
         \Route::resource('avidalands', 'Admin\AvidalandController');
         \Route::resource('atayalas', 'Admin\AtayalaController');
+        \Route::resource('presellings', 'Admin\PresellingController');
         /* NEW ADMIN RESOURCE ROUTE */
 
     });
