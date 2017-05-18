@@ -319,4 +319,30 @@ $factory->define(App\Models\Preselling::class, function (Faker\Generator $faker)
     ];
 });
 
+$factory->define(App\Models\Zipmatch::class, function (Faker\Generator $faker) {
+    return [
+        'id' => '',
+        'title' => '',
+        'postal_code' => '',
+        'country' => '',
+        'province' => '',
+        'city' => '',
+        'address' => '',
+        'building_type' => '',
+        'latitude' => '',
+        'longitude' => '',
+        'completion_year' => '',
+        'number_floor' => '',
+        'number_unit' => '',
+        'developer_name' => '',
+        'facilities' => '',
+        'unit_size' => '',
+        'condo_url' => '',
+        'developer_url' => '',
+        'image_url' => '',
+        'descriptions' => '',
+        'original_url' => '',
+    ];
+});
+
 /* NEW MODEL FACTORY */
