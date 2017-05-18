@@ -11,6 +11,7 @@ use App\Repositories\PropertyasiaRepositoryInterface;
 use App\Repositories\AvidalandRepositoryInterface;
 use App\Repositories\AtayalaRepositoryInterface;
 use App\Repositories\PresellingRepositoryInterface;
+use App\Repositories\ZipmatchRepositoryInterface;
 
 class BuildingController extends Controller
 {
@@ -35,6 +36,9 @@ class BuildingController extends Controller
     /** @var \App\Repositories\PresellingRepositoryInterface */
     protected $presellingRepository;
 
+    /** @var \App\Repositories\ZipmatchRepositoryInterface */
+    protected $zipmatchRepository;
+
     public function __construct(
         CondominiumsmanilaRepositoryInterface   $condominiumsmanilaRepository,
         PhrealestateRepositoryInterface         $phrealestateRepository,
@@ -42,7 +46,8 @@ class BuildingController extends Controller
         PropertyasiaRepositoryInterface         $propertyasiaRepository,
         AvidalandRepositoryInterface            $avidalandRepository,
         AtayalaRepositoryInterface              $atayalaRepository,
-        PresellingRepositoryInterface           $presellingRepository
+        PresellingRepositoryInterface           $presellingRepository,
+        ZipmatchRepositoryInterface             $zipmatchRepository
     )
     {
         $this->condominiumsmanilaRepository     = $condominiumsmanilaRepository;
@@ -52,6 +57,7 @@ class BuildingController extends Controller
         $this->avidalandRepository              = $avidalandRepository;
         $this->atayalaRepository                = $atayalaRepository;
         $this->presellingRepository             = $presellingRepository;
+        $this->zipmatchRepository               = $zipmatchRepository;
     }
 
     public function index(BaseRequest $request)
