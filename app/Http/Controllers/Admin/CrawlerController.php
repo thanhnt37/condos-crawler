@@ -15,6 +15,7 @@ use App\Repositories\PropertyasiaRepositoryInterface;
 use App\Repositories\AvidalandRepositoryInterface;
 use App\Repositories\AtayalaRepositoryInterface;
 use App\Repositories\PresellingRepositoryInterface;
+use App\Repositories\ZipmatchRepositoryInterface;
 
 class CrawlerController extends Controller
 {
@@ -39,6 +40,9 @@ class CrawlerController extends Controller
     /** @var \App\Repositories\PresellingRepositoryInterface */
     protected $presellingRepository;
 
+    /** @var \App\Repositories\ZipmatchRepositoryInterface */
+    protected $zipmatchRepository;
+
     public function __construct(
         CondominiumsmanilaRepositoryInterface   $condominiumsmanilaRepository,
         PhrealestateRepositoryInterface         $phrealestateRepository,
@@ -46,7 +50,8 @@ class CrawlerController extends Controller
         PropertyasiaRepositoryInterface         $propertyasiaRepository,
         AvidalandRepositoryInterface            $avidalandRepository,
         AtayalaRepositoryInterface              $atayalaRepository,
-        PresellingRepositoryInterface           $presellingRepository
+        PresellingRepositoryInterface           $presellingRepository,
+        ZipmatchRepositoryInterface             $zipmatchRepository
     )
     {
         $this->condominiumsmanilaRepository     = $condominiumsmanilaRepository;
@@ -56,6 +61,7 @@ class CrawlerController extends Controller
         $this->avidalandRepository              = $avidalandRepository;
         $this->atayalaRepository                = $atayalaRepository;
         $this->presellingRepository             = $presellingRepository;
+        $this->zipmatchRepository               = $zipmatchRepository;
     }
 
     public function index()
@@ -380,6 +386,51 @@ class CrawlerController extends Controller
                     'unit_size'       => isset($condo['unit_types']) ? $condo['unit_types'] : null,
                     'condo_url'       => null,
                     'developer_name'  => isset($condo['developer']) ? $condo['developer'] : (isset($condo['developer_name']) ? $condo['developer_name'] : null),
+                    'developer_url'   => null,
+                    'image_url'       => isset($condo['image_url']) ? $condo['image_url'] : null,
+                    'descriptions'    => null,
+                    'original_url'    => $url,
+                ]
+            );
+        }
+
+        return redirect()
+            ->action('Admin\CrawlerController@index')
+            ->with(
+                'message-success',
+                trans('admin.messages.general.create_success')
+            );
+    }
+
+    public function zipmatch(BaseRequest $request)
+    {
+        $url = $request->get('url', '');
+
+        $urls = $this->getListZipmatch($url);
+        foreach ( $urls as $url ) {
+            $condo = $this->getDetailZipmatch($url);
+            if( !$condo ) {
+                continue;
+            }
+
+            $this->zipmatchRepository->create(
+                [
+                    'title'           => isset($condo['title']) ? $condo['title'] : 'null',
+                    'postal_code'     => null,
+                    'country'         => 'philippine',
+                    'province'        => isset($condo['province']) ? $condo['province'] : null,
+                    'city'            => isset($condo['city']) ? $condo['city'] : null,
+                    'address'         => isset($condo['address']) ? $condo['address'] : null,
+                    'building_type'   => isset($condo['project_type']) ? $condo['project_type'] : 'condominium',
+                    'latitude'        => isset($condo['latitude']) ? $condo['latitude'] : 0,
+                    'longitude'       => isset($condo['longitude']) ? $condo['longitude'] : 0,
+                    'completion_year' => isset($condo['year_built']) ? $condo['year_built'] : (isset($condo['turnover_date']) ? $condo['turnover_date'] : null),
+                    'number_floor'    => isset($condo['floors']) ? $condo['floors'] : null,
+                    'number_unit'     => isset($condo['total_units']) ? $condo['total_units'] : null,
+                    'facilities'      => isset($condo['facilities']) ? $condo['facilities'] : null,
+                    'unit_size'       => isset($condo['unit_types']) ? $condo['unit_types'] : null,
+                    'condo_url'       => null,
+                    'developer_name'  => isset($condo['developer']) ? $condo['developer'] : null,
                     'developer_url'   => null,
                     'image_url'       => isset($condo['image_url']) ? $condo['image_url'] : null,
                     'descriptions'    => null,
@@ -726,6 +777,85 @@ class CrawlerController extends Controller
         return $data;
     }
     // ------------ Preselling.com.ph ------------
+
+    // ------------ Zipmatch.com ------------
+    private function getListZipmatch($url)
+    {
+        try {
+            $dom = new Htmldom($url);
+        } catch (\Exception $e) {
+            return null;
+        }
+
+        $elems = $dom->find('p.zm-font-size-m');
+
+        $urls = [];
+        foreach ( $elems as $elem ) {
+            $urls[] = $elem->find('a')[0]->href;
+        }
+
+        return array_unique($urls);
+    }
+
+    private function getDetailZipmatch($url)
+    {
+        try {
+            $dom = new Htmldom($url);
+        } catch (\Exception $e) {
+            return null;
+        }
+
+        $data['title']    = $dom->find('h1[itemprop=name]')[0]->plaintext;
+        $data['province'] = $dom->find('span[itemprop=addressRegion]')[0]->plaintext;
+        $data['city']     = $dom->find('span[itemprop=addressLocality]')[0]->plaintext;
+        if( isset($dom->find('span[itemprop=streetAddress]')[0]) ) {
+            $data['address']  = $dom->find('span[itemprop=streetAddress]')[0]->plaintext . ', ' . $data['city'] . ', ' . $data['province'];
+        } else {
+            $data['address']  = $data['city'] . ', ' . $data['province'];
+        }
+
+        $data['latitude']  = $dom->find('meta[itemprop=latitude]')[0]->getAttribute('content');
+        $data['longitude']  = $dom->find('meta[itemprop=longitude]')[0]->getAttribute('content');
+
+        // status, elevators, year_built, floors
+        if( count($dom->find('div#buildings')) ) {
+            if( isset($dom->find('div.building-details')[0]) ) {
+                $infos = $dom->find('div.building-details')[0]->find('div.project-info')[0]->find('div.popover-body')[0]->find('li');
+                foreach ($infos as $info) {
+                    $tmp = explode(' - ', $info->plaintext);
+                    $data[\StringHelper::camel2Snake($tmp[0])] = $tmp[1];
+                }
+            }
+        } else {
+            if( isset($dom->find('div.building-details')[0]) ) {
+                $infos = $dom->find('div.building-details')[0]->find('div.project-info')[0]->find('span');
+                for( $i = 0; $i < count($infos); $i +=2 ) {
+                    $data[\StringHelper::camel2Snake($infos[$i]->plaintext)] = $infos[$i+1]->plaintext;
+                }
+            }
+        }
+
+        // project_status, turnover_year, developer, project_type, unit_types
+        $keys = $dom->find('table.details-table')[0]->find('span.cell-title');
+        $values = $dom->find('table.details-table')[0]->find('b.cell-value');
+        foreach ($keys as $i => $key) {
+
+            $data[\StringHelper::camel2Snake($key->plaintext)] = $values[$i]->plaintext;
+        }
+
+        $data['facilities'] = '';
+        if( isset($dom->find('div.feature-amenities')[0]) ) {
+            $facilities = $dom->find('div.feature-amenities')[0]->find('span.item-feature');
+            foreach ( $facilities as $key => $facility ) {
+                $data['facilities'] .= $key ? ', ' . $facility->plaintext : $facility->plaintext;
+            }
+        }
+
+        $data['image_url']  = $this->get_string_between($dom->find('section.intro')[0]->getAttribute('style'), "url('", "');");
+
+        return $data;
+    }
+    // ------------ Zipmatch.com ------------
 
 
     private function get_string_between($string, $start, $end){

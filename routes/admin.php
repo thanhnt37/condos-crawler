@@ -39,6 +39,7 @@
                 \Route::post('/avidaland', 'Admin\CrawlerController@avidaland');
                 \Route::post('/atayala', 'Admin\CrawlerController@atayala');
                 \Route::post('/preselling', 'Admin\CrawlerController@preselling');
+                \Route::post('/zipmatch', 'Admin\CrawlerController@zipmatch');
             });
 
             \Route::get('/buildings', 'Admin\BuildingController@index');
