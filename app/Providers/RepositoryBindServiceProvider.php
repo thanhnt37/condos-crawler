@@ -121,6 +121,11 @@ class RepositoryBindServiceProvider extends ServiceProvider {
             \App\Repositories\Eloquent\PresellingRepository::class
         );
 
+        $this->app->singleton(
+            \App\Repositories\ZipmatchRepositoryInterface::class,
+            \App\Repositories\Eloquent\ZipmatchRepository::class
+        );
+
         /* NEW BINDING */
     }
 }

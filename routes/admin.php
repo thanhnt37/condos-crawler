@@ -66,6 +66,7 @@
         \Route::resource('avidalands', 'Admin\AvidalandController');
         \Route::resource('atayalas', 'Admin\AtayalaController');
         \Route::resource('presellings', 'Admin\PresellingController');
+        \Route::resource('zipmatches', 'Admin\ZipmatchController');
         /* NEW ADMIN RESOURCE ROUTE */
 
     });
