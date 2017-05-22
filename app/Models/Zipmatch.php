@@ -70,7 +70,6 @@ class Zipmatch extends Base
     public function toAPIArray()
     {
         return [
-            'id' => $this->id,
             'title' => $this->title,
             'postal_code' => $this->postal_code,
             'country' => $this->country,
