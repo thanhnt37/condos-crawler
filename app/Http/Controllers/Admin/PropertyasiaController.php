@@ -3,6 +3,7 @@
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 
+use App\Models\Propertyasia;
 use App\Repositories\PropertyasiaRepositoryInterface;
 use App\Http\Requests\Admin\PropertyasiaRequest;
 use App\Http\Requests\PaginationRequest;
@@ -39,10 +40,10 @@ class PropertyasiaController extends Controller
         $paginate['order']      = $request->order();
         $paginate['direction']  = $request->direction();
         $paginate['baseUrl']    = action( 'Admin\PropertyasiaController@index' );
-        $filter[ 'keyword' ]    = $request->get( 'l_search_keyword', '' );
+        $filter[ 'keyword' ]    = $request->get( 'filter_keyword', '' );
+        $filter[ 'city' ]       = $request->get( 'filter_city', '' );
 
-        $count = $this->propertyasiaRepository->count();
-        $propertyasias = $this->propertyasiaRepository->get( $paginate['order'], $paginate['direction'], $paginate['offset'], $paginate['limit'] );
+        $cities = Propertyasia::distinct('city')->select('city')->orderBy('city', 'asc')->get();
 
         $propertyasias = $this->propertyasiaRepository->getWithFilter(
             $filter,
@@ -54,10 +55,12 @@ class PropertyasiaController extends Controller
         $count = $this->propertyasiaRepository->countWithFilter( $filter );
 
         return view('pages.admin.' . config('view.admin') . '.propertyasia.index', [
-            'propertyasias'    => $propertyasias,
+            'propertyasias' => $propertyasias,
             'count'         => $count,
             'paginate'      => $paginate,
             'keyword'       => $filter[ 'keyword' ],
+            'currentCity'   => $filter[ 'city' ],
+            'cities'        => $cities,
         ]);
     }
 

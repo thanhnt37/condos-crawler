@@ -25,37 +25,59 @@ Propertyasia
 <div class="box box-primary">
     <div class="box-header with-border">
 
-        <div class="row">
-            <div class="col-sm-6">
-                <h3 class="box-title">
-                    <p class="text-right">
-                        <a href="{!! action('Admin\PropertyasiaController@create') !!}" class="btn btn-block btn-primary btn-sm" style="width: 125px;">@lang('admin.pages.common.buttons.create')</a>
-                    </p>
-                </h3>
+        <form method="get" accept-charset="utf-8" action="{!! action('Admin\PropertyasiaController@index') !!}">
+            {!! csrf_field() !!}
 
-                <form method="get" accept-charset="utf-8" action="{!! action('Admin\PropertyasiaController@index') !!}">
-                    {!! csrf_field() !!}
+            <div class="row">
+                <div class="col-sm-6">
+                    <h3 class="box-title">
+                        <p class="text-right">
+                            <a href="{!! action('Admin\PropertyasiaController@create') !!}"
+                               class="btn btn-block btn-primary btn-sm"
+                               style="width: 125px;">@lang('admin.pages.common.buttons.create')</a>
+                        </p>
+                    </h3>
+
                     <div class="row search-input">
                         <div class="col-md-12" style="margin-bottom: 10px;">
                             <div class="search-input-text">
-                                <input type="text" name="l_search_keyword" class="form-control" placeholder="Search here" id="l-search-keyword" value="{{ $keyword }}">
+                                <input type="text" name="filter_keyword" class="form-control"
+                                       placeholder="Search here" id="filter_keyword" value="{{ $keyword }}">
                                 <button type="submit" class="btn">
                                     <i class="fa fa-search"></i>
                                 </button>
                             </div>
                         </div>
                     </div>
-                </form>
 
-                <br>
-                <p style="display: inline-block;">@lang('admin.pages.common.label.search_results', ['count' => $count])</p>
-            </div>
-            <div class="col-sm-6 wrap-top-pagination">
-                <div class="heading-page-pagination">
-                    {!! \PaginationHelper::render($paginate['order'], $paginate['direction'], $paginate['offset'], $paginate['limit'], $count, $paginate['baseUrl'], [], $count, 'shared.topPagination') !!}
+                    <br>
+                    <p style="display: inline-block;">@lang('admin.pages.common.label.search_results', ['count' => $count])</p>
+                </div>
+                <div class="col-sm-6 wrap-top-pagination">
+                    <div class="heading-page-pagination">
+                        {!! \PaginationHelper::render($paginate['order'], $paginate['direction'], $paginate['offset'], $paginate['limit'], $count, $paginate['baseUrl'], [], $count, 'shared.topPagination') !!}
+                    </div>
                 </div>
             </div>
-        </div>
+
+            <div class="row">
+                <div class="col-md-3">
+                    <select class="form-control" name="filter_city" id="filter_city" style="margin-bottom: 15px;" onchange="this.form.submit()">
+                        <option value="">Filter by City</option>
+                        <option value="null">--- None ---</option>
+
+                        @foreach( $cities as $city )
+                            @if( !empty($city->city) && ($city->city != '') )
+                                <option value="{!! $city->city !!}" @if( (old('filter_city') && old('filter_city') == $city->city) || ( $currentCity == $city->city) ) selected @endif>
+                                    {{ $city->city }}
+                                </option>
+                            @endif
+                        @endforeach
+                    </select>
+                </div>
+            </div>
+
+        </form>
     </div>
     <div class="box-body" style=" overflow-x: scroll; ">
         <table class="table table-bordered">
