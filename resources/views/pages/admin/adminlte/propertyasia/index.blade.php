@@ -64,7 +64,7 @@ Propertyasia
                 <div class="col-md-3">
                     <select class="form-control" name="filter_city" id="filter_city" style="margin-bottom: 15px;" onchange="this.form.submit()">
                         <option value="">Filter by City</option>
-                        <option value="null">--- None ---</option>
+                        <option value="null" @if( (old('filter_city') && old('filter_city') == 'null') || ( $currentCity == 'null') ) selected @endif>--- None City ---</option>
 
                         @foreach( $cities as $city )
                             @if( !empty($city->city) && ($city->city != '') )

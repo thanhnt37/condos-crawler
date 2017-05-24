@@ -34,13 +34,13 @@ class PropertyasiaRepository extends SingleKeyModelRepository implements Propert
             $subquery->where('title', 'like', '%'.$keyword.'%');
         });
 
-        if( $city != '' ) {
-            $model = $model->where('city', '=', $city);
-        } else {
+        if( $city == 'null' ) {
             $model = $model->where(function ($subquery) use ($keyword) {
                 $subquery->where('city', '=', '')
                     ->orWhere('city', '=', null);
             });
+        } elseif ($city != '') {
+            $model = $model->where('city', '=', $city);
         }
 
         return $model->orderBy($order, $direction)->skip($offset)->take($limit)->get();
@@ -51,21 +51,21 @@ class PropertyasiaRepository extends SingleKeyModelRepository implements Propert
         $model = $this->getBlankModel();
 
         $keyword = isset($filter['keyword']) ? $filter['keyword'] : '';
-        $city = isset($filter['city']) ? $filter['city'] : '';
-        
+        $city = isset($filter['city']) ? (($filter['city'] != '') ? $filter['city'] : '') : '';
+
         $model = $model->where(function ($subquery) use ($keyword) {
             $subquery->where('title', 'like', '%'.$keyword.'%');
         });
 
-        if( $city != '' ) {
-            $model = $model->where('city', '=', $city);
-        } else {
+        if( $city == 'null' ) {
             $model = $model->where(function ($subquery) use ($keyword) {
                 $subquery->where('city', '=', '')
                     ->orWhere('city', '=', null);
             });
+        } elseif ($city != '') {
+            $model = $model->where('city', '=', $city);
         }
-
+        
         return $model->count();
     }
 }
