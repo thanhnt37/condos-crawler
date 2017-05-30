@@ -70,11 +70,20 @@ class BuildingController extends Controller
 
         $buildings = [];
         $index = 0;
+        $count = 0;
         foreach ( $similars as $key2 => $similar ) {
+            $tmp = false;
             foreach ( $condos as $key => $condo ) {
+                if( $repos == 'propertyasiaRepository' && ($key == $key2) ) {
+                    continue;
+                }
                 $check = $this->checkSimilar($condo, $similar);
 
-                if( $check['percent_similar'] >= 80 || $check['percent_keyword'] >= 80 ) {
+                if( $check['percent_similar'] >= 80 && $check['percent_keyword'] >= 80 ) {
+                    if( !$tmp ) {
+                        $count += 1;
+                        $tmp = true;
+                    }
                     $buildings[$index]['condo_id'] = $key;
                     $buildings[$index]['similar_id'] = $key2;
                     $buildings[$index]['condo'] = $condo;
@@ -90,7 +99,7 @@ class BuildingController extends Controller
         return view('pages.admin.' . config('view.admin') . '.buildings.index', [
             'buildings' => $buildings,
             'site'      => $site,
-            'count'     => $this->$repos->count()
+            'count'     => $count
         ]);
     }
 

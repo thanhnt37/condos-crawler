@@ -111,6 +111,7 @@
                             <option value="atayala" @if($site == 'atayala') selected @endif>atayala.com</option>
                             <option value="preselling" @if($site == 'preselling') selected @endif>preselling.com.ph</option>
                             <option value="zipmatch" @if($site == 'zipmatch') selected @endif>zipmatch.com</option>
+                            <option value="propertyasia" @if($site == 'propertyasia') selected @endif>Collections</option>
                         </select>
                     </h3>
                     <br>
