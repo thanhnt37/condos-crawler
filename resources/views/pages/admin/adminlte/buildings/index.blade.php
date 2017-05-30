@@ -161,7 +161,9 @@
 
                     <td>
                         <span style="cursor: pointer;" class="btn btn-block btn-primary btn-xs merge-building" cid="{{$building['condo_id']}}" sid="{{$building['similar_id']}}">Merge</span>
-                        <span style="cursor: pointer; background: #8d8e6c;" class="btn btn-block btn-success btn-xs import-building" sid="{{$building['similar_id']}}">Import</span>
+                        @if( $site != 'propertyasia' )
+                            <span style="cursor: pointer; background: #8d8e6c;" class="btn btn-block btn-success btn-xs import-building" sid="{{$building['similar_id']}}">Import</span>
+                        @endif
                     </td>
                 </tr>
             @endforeach
